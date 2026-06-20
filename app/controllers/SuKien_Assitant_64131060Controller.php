@@ -91,3 +91,4 @@ class SuKien_Assitant_64131060Controller extends Controller
     private function cfg(): array { return $this->resourceCfg('SuKien'); }
     private function keys(array $params): array { return $this->keysFromRequest($this->cfg(), $params); }
 }
+// validation
