@@ -26,3 +26,4 @@ class CheckinSuKien_Admin_64131060Controller extends Controller
     private function cfg(): array { return $this->resourceCfg('CheckinSuKien'); }
     private function keys(array $params): array { return $this->keysFromRequest($this->cfg(), $params); }
 }
+// refactor
