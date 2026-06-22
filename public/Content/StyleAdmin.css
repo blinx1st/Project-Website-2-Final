@@ -7,6 +7,7 @@
     padding-top: 10px;
 }
 
+/* Nhóm bố cục quản trị cũ: menu, nội dung và footer. */
 #menu {
     width: 100%;
     background-color: rgba(41,108,178,255);
@@ -35,6 +36,7 @@
     height: 80%;
 }
 
+/* Trạng thái liên kết và nút giúp nhận biết phần tử có thể thao tác. */
 a {
     text-decoration: none;
     color: white;

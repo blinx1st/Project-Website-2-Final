@@ -1,3 +1,4 @@
+<?php // Kết quả quét QR đã được controller xử lý; view chỉ phân nhánh lỗi hoặc thành công. ?>
 <section class="panel checkin-panel">
     <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php if (!empty($data['event'])): ?>
@@ -5,6 +6,7 @@
         <p><strong>Mã sự kiện:</strong> <?= h($data['event']['MaSuKien'] ?? '') ?></p>
     <?php endif; ?>
 
+    <?php // Hai nhánh dùng chung trang để người dùng luôn có lối quay về danh sách/lịch sử. ?>
     <?php if (!empty($data['error'])): ?>
         <div class="alert alert-danger"><?= h($data['error']) ?></div>
     <?php else: ?>

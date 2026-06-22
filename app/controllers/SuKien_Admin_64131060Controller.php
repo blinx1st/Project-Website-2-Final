@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý toàn bộ sự kiện và tạo mã QR check-in.
 class SuKien_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'SuKien_Admin_64131060';
     private string $listAction = 'TimKiemSuKien_Admin_64131060';
     private string $pageTitle = 'Trang sự kiện (Chủ nhiệm)';

@@ -1,3 +1,4 @@
+<?php // Trang hồ sơ chỉ hiển thị dữ liệu người hiện tại và dẫn tới action sửa phù hợp vai trò. ?>
 <section class="panel">
     <h1 class="page-title"><?= h($data['title']) ?></h1>
     <table class="table table-bordered">

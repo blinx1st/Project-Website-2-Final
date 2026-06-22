@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý danh mục loại sự kiện dùng bởi sự kiện và quy tắc điểm.
 class LoaiSuKien_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'LoaiSuKien_Admin_64131060';
     private string $listAction = 'LoaiSuKien_Admin_64131060';
     private string $pageTitle = 'Loại sự kiện';

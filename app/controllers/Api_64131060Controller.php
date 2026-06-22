@@ -2,6 +2,7 @@
 // API nội bộ trả JSON cho các thao tác dùng fetch/AJAX như đăng ký sự kiện, check-in và xem điểm.
 class Api_64131060Controller extends Controller
 {
+    // Thành viên đăng ký; Repository tự kiểm tra đăng ký cũ và sức chứa trong transaction.
     public function DangKySuKien(): void
     {
         try {
@@ -17,6 +18,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Chủ nhiệm/trợ giảng xác nhận tham gia để phát sinh đồng thời check-in, điểm và chứng nhận.
     public function XacNhanThamGia(): void
     {
         try {
@@ -30,6 +32,7 @@ class Api_64131060Controller extends Controller
                 throw new InvalidArgumentException('Thiếu mã sự kiện hoặc mã thành viên.');
             }
             if (current_role() === 'TVTG' && !$this->repo()->canManageEvent($maSuKien, $this->memberId())) {
+                // Kiểm tra theo từng bản ghi ngăn trợ giảng gửi mã sự kiện ngoài phạm vi bằng tay.
                 $this->denyUnauthorized();
             }
             $data = $this->repo()->confirmAttendance($maSuKien, $maThanhVien, $this->memberId());
@@ -43,6 +46,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Hủy đăng ký là POST vì thao tác này thay đổi trạng thái dữ liệu.
     public function HuyDangKySuKien(): void
     {
         try {
@@ -61,6 +65,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Xác thực token QR và cửa sổ thời gian trước khi chuyển sang luồng xác nhận chung.
     public function CheckInSuKien(): void
     {
         try {
@@ -80,6 +85,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Cấp danh sách người đăng ký cho giao diện quản lý một sự kiện.
     public function DanhSachDangKy(): void
     {
         try {
@@ -97,6 +103,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Dashboard chỉ dành cho TVCN và nhận bộ lọc qua query string.
     public function ThongKe(): void
     {
         try {
@@ -110,6 +117,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Với role TV, mã thành viên luôn lấy từ session thay vì tin tham số người dùng gửi lên.
     public function DiemRenLuyen(): void
     {
         try {
@@ -124,6 +132,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // Áp dụng cùng nguyên tắc tự giới hạn dữ liệu cho danh sách chứng nhận.
     public function ChungNhan(): void
     {
         try {
@@ -137,6 +146,7 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    // API phụ thuộc nhóm trả value/label để JavaScript thay lựa chọn thành viên trong form điểm danh.
     public function DanhSachThanhVienNhom(): void
     {
         try {
@@ -156,6 +166,7 @@ class Api_64131060Controller extends Controller
 
     private function memberId(): string
     {
+        // Session mới đã có mã; nhánh tra email giữ tương thích với session cũ rồi lưu cache lại.
         if (current_member_id()) {
             return (string)current_member_id();
         }

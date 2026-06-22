@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý chứng nhận được cấp sau khi thành viên hoàn thành sự kiện.
 class ChungNhan_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ChungNhan_Admin_64131060';
     private string $listAction = 'ChungNhan_Admin_64131060';
     private string $pageTitle = 'Chứng nhận';

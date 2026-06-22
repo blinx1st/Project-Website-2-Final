@@ -1,4 +1,7 @@
+# Bật mod_rewrite để URL /Controller/Action được đưa vào một điểm vào duy nhất là index.php.
 RewriteEngine On
+# File và thư mục vật lý như CSS, JavaScript, ảnh được Apache phục vụ trực tiếp.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+# QSA giữ query string gốc; L dừng các luật rewrite sau khi luật này khớp.
 RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]

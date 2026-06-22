@@ -1,7 +1,9 @@
+-- Script khởi tạo toàn bộ schema và dữ liệu mẫu cho hệ thống quản lý CLB.
 CREATE DATABASE IF NOT EXISTS clbtinhoc_64131060 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE clbtinhoc_64131060;
 SET NAMES utf8mb4;
 
+-- Tắt kiểm tra khóa ngoại tạm thời để có thể xóa bảng theo thứ tự làm mới schema.
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS ChungNhan;
 DROP TABLE IF EXISTS TongDiemRenLuyen;
@@ -22,6 +24,7 @@ DROP TABLE IF EXISTS ThanhVien;
 DROP TABLE IF EXISTS VaiTro;
 SET FOREIGN_KEY_CHECKS = 1;
 
+-- Nhóm tài khoản và phân quyền: VaiTro là bảng cha của ThanhVien.
 CREATE TABLE VaiTro (
     MaVaiTro VARCHAR(50) PRIMARY KEY,
     TenVaiTro VARCHAR(50) NOT NULL
@@ -37,6 +40,7 @@ CREATE TABLE ThanhVien (
     CONSTRAINT fk_thanhvien_vaitro FOREIGN KEY (MaVaiTro) REFERENCES VaiTro(MaVaiTro)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Danh mục tổ chức: loại sự kiện, CLB và quan hệ thành viên - CLB.
 CREATE TABLE LoaiSuKien (
     MaLoaiSuKien VARCHAR(50) PRIMARY KEY,
     TenLoaiSuKien VARCHAR(100) NOT NULL,
@@ -62,6 +66,7 @@ CREATE TABLE ThanhVienCLB (
     CONSTRAINT fk_tvclb_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Nghiệp vụ sự kiện: thông tin sự kiện, đăng ký khóa kép và log check-in duy nhất.
 CREATE TABLE SuKien (
     MaSuKien VARCHAR(50) PRIMARY KEY,
     TenSuKien VARCHAR(100) NOT NULL,
@@ -108,6 +113,7 @@ CREATE TABLE CheckinSuKien (
     CONSTRAINT fk_checkin_xacnhan FOREIGN KEY (XacNhanBoi) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Nhóm học tập độc lập với CLB; TroGiang xác định phạm vi quản lý của TVTG.
 CREATE TABLE NhomHocTap (
     MaNhom VARCHAR(50) PRIMARY KEY,
     TenNhom VARCHAR(100) NOT NULL,
@@ -117,6 +123,7 @@ CREATE TABLE NhomHocTap (
     CONSTRAINT fk_nhom_trogiang FOREIGN KEY (TroGiang) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Bảng nối dùng khóa chính kép để một thành viên chỉ xuất hiện một lần trong mỗi nhóm.
 CREATE TABLE ThanhVienNhom (
     MaNhom VARCHAR(50) NOT NULL,
     MaThanhVien VARCHAR(50) NOT NULL,
@@ -126,6 +133,7 @@ CREATE TABLE ThanhVienNhom (
     CONSTRAINT fk_tvnhom_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Điểm danh nhóm được giữ riêng với check-in sự kiện vì hai nghiệp vụ có vòng đời khác nhau.
 CREATE TABLE DiemDanh (
     MaDiemDanh INT PRIMARY KEY AUTO_INCREMENT,
     MaNhom VARCHAR(50) NOT NULL,
@@ -137,6 +145,7 @@ CREATE TABLE DiemDanh (
     CONSTRAINT fk_diemdanh_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Nội dung vận hành gồm bài đăng và báo cáo do thành viên có thẩm quyền tạo.
 CREATE TABLE BaiDang (
     MaBaiDang VARCHAR(50) PRIMARY KEY NOT NULL,
     TieuDe TEXT NOT NULL,
@@ -156,6 +165,7 @@ CREATE TABLE BaoCao (
     CONSTRAINT fk_baocao_nopboi FOREIGN KEY (NopBoi) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Điểm rèn luyện là dữ liệu dẫn xuất từ quy tắc theo loại sự kiện/học kỳ/năm học.
 CREATE TABLE QuyTacDiemRenLuyen (
     MaQuyTac INT PRIMARY KEY AUTO_INCREMENT,
     MaLoaiSuKien VARCHAR(50) NOT NULL,
@@ -194,6 +204,7 @@ CREATE TABLE TongDiemRenLuyen (
     CONSTRAINT fk_tongdiem_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Chứng nhận gắn một thành viên với một sự kiện đã được xác nhận tham gia.
 CREATE TABLE ChungNhan (
     MaChungNhan VARCHAR(100) PRIMARY KEY,
     MaSuKien VARCHAR(50) NOT NULL,
@@ -207,6 +218,7 @@ CREATE TABLE ChungNhan (
     CONSTRAINT fk_chungnhan_capboi FOREIGN KEY (CapBoi) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Dữ liệu mẫu bắt đầu từ bảng cha trước để các khóa ngoại phía sau luôn hợp lệ.
 INSERT INTO VaiTro (MaVaiTro, TenVaiTro) VALUES
 ('TVCN', 'Admin / Phòng CTSV'),
 ('TVTG', 'Ban tổ chức CLB'),
@@ -241,6 +253,7 @@ INSERT INTO ThanhVienCLB (MaCLB, MaThanhVien, VaiTroCLB) VALUES
 ('CLBWEB', '64131060', 'Chủ nhiệm'),
 ('CLBWEB', '64130152', 'Thành viên');
 
+-- Seed sự kiện trước rồi mới seed đăng ký/check-in phụ thuộc sự kiện.
 INSERT INTO SuKien (MaSuKien, TenSuKien, MaCLB, MaLoaiSuKien, HocKy, NamHoc, MoTa, NgayBatDau, NgayKetThuc, NguoiToChuc, SucChua, CheckinToken, CheckinMoLuc, CheckinDongLuc) VALUES
 ('SK001', 'Workshop Kỹ năng', 'CLBTH', 'WORKSHOP', 'HK1', '2024-2025', 'Buổi workshop về kỹ năng làm việc nhóm.', '2024-12-01 08:00:00', '2024-12-01 11:00:00', '64132127', 80, 'token-sk001-64131060', '2024-12-01 07:30:00', '2024-12-01 11:30:00'),
 ('SK002', 'Hackathon', 'CLBTH', 'CONTEST', 'HK1', '2024-2025', 'Cuộc thi lập trình kéo dài 48 giờ.', '2024-12-15 08:00:00', '2024-12-17 18:00:00', '64132127', 60, 'token-sk002-64131060', '2024-12-15 07:30:00', '2024-12-17 18:30:00'),
@@ -259,6 +272,7 @@ INSERT INTO CheckinSuKien (MaSuKien, MaThanhVien, ThoiGianCheckin, PhuongThuc, X
 ('SK001', '64130378', '2024-12-01 11:05:00', 'Thủ công', '64132127'),
 ('SK001', '64132848', '2024-12-01 11:08:00', 'Thủ công', '64132127');
 
+-- Seed nhóm, quan hệ thành viên nhóm và lịch sử điểm danh theo đúng thứ tự khóa ngoại.
 INSERT INTO NhomHocTap (MaNhom, TenNhom, TroGiang, MoTa) VALUES
 ('MNLT', 'Nhóm Nhập môn lập trình', '64132127', 'Nhóm học tập về lập trình căn bản.'),
 ('KTLT', 'Nhóm Kỹ thuật lập trình', '64132677', 'Nhóm học tập về lập trình nâng cao.'),
@@ -284,6 +298,7 @@ INSERT INTO BaoCao (TieuDe, NoiDung, NopBoi) VALUES
 ('Báo cáo Workshop Kỹ năng', 'Tổng kết buổi workshop ngày 01/12.', '64132127'),
 ('Báo cáo cuộc thi Hackathon', 'Báo cáo kết quả cuộc thi Hackathon.', '64132127');
 
+-- Seed quy tắc trước khi tạo chi tiết điểm, tổng điểm và chứng nhận dẫn xuất.
 INSERT INTO QuyTacDiemRenLuyen (MaLoaiSuKien, HocKy, NamHoc, Diem, GhiChu) VALUES
 ('WORKSHOP', 'HK1', '2024-2025', 5, 'Cộng điểm khi xác nhận tham gia workshop.'),
 ('CONTEST', 'HK1', '2024-2025', 10, 'Cộng điểm khi xác nhận tham gia cuộc thi.'),

@@ -10,6 +10,7 @@ require_once __DIR__ . '/repository/ScopeRepositoryTrait.php';
 // Repository là lớp làm việc với database bằng PDO và chứa các hàm nghiệp vụ chính của hệ thống.
 class Repository
 {
+    // Mỗi trait gom một nhóm nghiệp vụ nhưng cùng dùng kết nối PDO và helper query của Repository.
     use MemberRepositoryTrait;
     use ClubRepositoryTrait;
     use EventRepositoryTrait;
@@ -22,11 +23,13 @@ class Repository
 
     public function __construct()
     {
+        // Database::connection() tái sử dụng một PDO duy nhất trong request.
         $this->db = Database::connection();
     }
 
     private function fetchAll(string $sql, array $params = []): array
     {
+        // Prepared statement tách dữ liệu khỏi câu SQL và trả toàn bộ dòng dạng associative array.
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -34,6 +37,7 @@ class Repository
 
     private function fetchOne(string $sql, array $params = []): ?array
     {
+        // Chuẩn hóa trường hợp không có bản ghi thành null để controller kiểm tra thống nhất.
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch();
@@ -42,12 +46,14 @@ class Repository
 
     public function options(array $relation): array
     {
+        // Chuyển bảng quan hệ thành cặp value/label mà generic/form.php dùng để tạo option.
         $sql = sprintf('SELECT %s AS value, %s AS label FROM %s ORDER BY %s', $relation['value'], $relation['label'], $relation['table'], $relation['label']);
         return $this->db->query($sql)->fetchAll();
     }
 
     private function clubSelectSql(): string
     {
+        // Các hàm *SelectSql tạo câu JOIN nền; trait có thể nối thêm WHERE/ORDER BY theo role.
         return 'SELECT CLB.*, ThanhVien.HoTen AS ChuNhiemTen
             FROM CLB
             LEFT JOIN ThanhVien ON ThanhVien.MaThanhVien = CLB.ChuNhiem';
@@ -164,6 +170,7 @@ class Repository
 
     private function assistantClubSubquery(): string
     {
+        // TVTG chỉ quản lý CLB nơi họ là chủ nhiệm hoặc thuộc ban tổ chức.
         return "SELECT MaCLB FROM ThanhVienCLB WHERE MaThanhVien = :assistantClubMember AND VaiTroCLB IN ('Chủ nhiệm', 'Ban tổ chức')";
     }
 

@@ -1,6 +1,8 @@
 <?php
+// Thành viên tự đăng ký tài khoản và chỉ được xem/sửa hồ sơ của chính mình.
 class ThanhVien_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVien_Member_64131060';
     private string $listAction = 'Index';
     private string $pageTitle = 'Thành viên';

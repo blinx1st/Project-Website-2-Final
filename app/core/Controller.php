@@ -4,6 +4,7 @@ require_once APP_PATH . '/core/CrudSupport.php';
 // Base Controller chứa các hàm nền dùng chung: render view, kiểm tra đăng nhập, phân quyền và trả JSON.
 class Controller
 {
+    // Trait cung cấp quy trình CRUD generic; controller con chỉ truyền cấu hình và callback Repository.
     use CrudSupport;
 
     protected ?Repository $repo = null;
@@ -14,6 +15,7 @@ class Controller
 
     protected function repo(): Repository
     {
+        // Lazy-load Repository để các trang tĩnh không mở kết nối database không cần thiết.
         if ($this->repo === null) {
             $this->repo = new Repository();
         }
@@ -22,12 +24,14 @@ class Controller
 
     protected function render(string $view, array $data = [], string $layout = 'main'): void
     {
+        // $view là đường dẫn tương đối bên trong app/views và $data là hợp đồng dữ liệu của view.
         $viewFile = APP_PATH . '/views/' . $view . '.php';
         if (!is_file($viewFile)) {
             http_response_code(500);
             echo 'View not found: ' . h($view);
             return;
         }
+        // Buffer nội dung view trước, sau đó layout chèn nó vào biến $content giữa header/footer.
         ob_start();
         require $viewFile;
         $content = ob_get_clean();
@@ -41,6 +45,7 @@ class Controller
 
     protected function notFound(string $message = 'Không tìm thấy dữ liệu.'): void
     {
+        // Dùng cùng view thông báo nhưng vẫn trả đúng HTTP 404 cho client và công cụ kiểm thử.
         http_response_code(404);
         $this->render('generic/message', ['title' => 'Không tìm thấy', 'message' => $message]);
     }
@@ -52,6 +57,7 @@ class Controller
 
     protected function requireLogin(): void
     {
+        // Request HTML được redirect; AJAX/API nhận JSON 401 để JavaScript tự xử lý lỗi.
         if (!current_role()) {
             if ($this->wantsJson()) {
                 $this->json(['success' => false, 'message' => 'Bạn cần đăng nhập.'], 401);
@@ -62,6 +68,7 @@ class Controller
 
     protected function requireRoles(array $roles): void
     {
+        // TVCN: Chủ nhiệm, TVTG: Trợ giảng, TV: Thành viên; so sánh strict tránh ép kiểu ngoài ý muốn.
         $this->requireLogin();
         if (!in_array((string)current_role(), $roles, true)) {
             $this->denyUnauthorized();
@@ -70,6 +77,7 @@ class Controller
 
     protected function denyUnauthorized(): void
     {
+        // Người dùng đã đăng nhập nhưng sai quyền nhận 403 và đường quay về đúng trang chủ theo role.
         if ($this->wantsJson()) {
             $this->json(['success' => false, 'message' => 'Bạn không có quyền thực hiện thao tác này.'], 403);
         }
@@ -86,6 +94,7 @@ class Controller
 
     protected function wantsJson(): bool
     {
+        // Hỗ trợ cả Accept header chuẩn và dấu hiệu XMLHttpRequest thường dùng bởi fetch/AJAX.
         $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
         $requestedWith = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
         return str_contains($accept, 'application/json') || strtolower($requestedWith) === 'xmlhttprequest';
@@ -93,6 +102,7 @@ class Controller
 
     protected function json(array $payload, int $status = 200): void
     {
+        // JSON_UNESCAPED_UNICODE giữ tiếng Việt dễ đọc; exit ngăn layout HTML bị nối vào JSON.
         http_response_code($status);
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($payload, JSON_UNESCAPED_UNICODE);
@@ -101,6 +111,7 @@ class Controller
 
     protected function resourceCfg(string $resource): array
     {
+        // static cache giúp resources.php chỉ được nạp một lần trong cùng request.
         static $configs = null;
         if ($configs === null) {
             $configs = require APP_PATH . '/config/resources.php';
@@ -113,6 +124,7 @@ class Controller
 
     protected function currentMemberId(): string
     {
+        // Ưu tiên session; tìm lại bằng email là phương án tương thích với session cũ chưa có mã thành viên.
         if (current_member_id()) {
             return (string)current_member_id();
         }
@@ -125,6 +137,7 @@ class Controller
 
     protected function renderProfile(string $controller, string $editAction): void
     {
+        // Profile dùng resource ThanhVien nhưng chỉ lấy đúng bản ghi của tài khoản đang đăng nhập.
         $this->requireLogin();
         $member = $this->repo()->findMemberByEmail(current_email());
         if (!$member) {
@@ -142,6 +155,7 @@ class Controller
 
     protected function renderAlert(string $title, string $message, string $buttonText, string $controller, string $action): void
     {
+        // Chuẩn hóa các trang thông báo có một nút điều hướng quay lại luồng nghiệp vụ.
         $this->render('generic/message', [
             'title' => $title,
             'message' => $message,
@@ -152,6 +166,7 @@ class Controller
 
     protected function renderGeneratedPointWriteBlocked(string $controller, string $listAction): void
     {
+        // Điểm rèn luyện phát sinh từ xác nhận sự kiện nên không cho controller ghi tay.
         $this->render('generic/message', [
             'title' => 'Không nhập điểm thủ công',
             'message' => 'Điểm rèn luyện được tự động tính từ quy tắc điểm khi sinh viên tham gia sự kiện.',

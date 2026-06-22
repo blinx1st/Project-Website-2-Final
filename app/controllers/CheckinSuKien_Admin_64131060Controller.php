@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm xem log check-in; dữ liệu log là kết quả sinh ra từ luồng xác nhận tham gia.
 class CheckinSuKien_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'CheckinSuKien_Admin_64131060';
     private string $listAction = 'CheckinSuKien_Admin_64131060';
     private string $pageTitle = 'Log check-in sự kiện';

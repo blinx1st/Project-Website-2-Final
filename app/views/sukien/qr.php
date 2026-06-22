@@ -1,4 +1,5 @@
 <?php
+// Chuyển scanUrl tương đối thành URL tuyệt đối để thiết bị khác quét QR có thể mở đúng địa chỉ.
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $absoluteScanUrl = $scheme . '://' . $host . $data['scanUrl'];

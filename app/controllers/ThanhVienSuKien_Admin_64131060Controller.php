@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý đăng ký sự kiện và có thể xác nhận người tham gia.
 class ThanhVienSuKien_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVienSuKien_Admin_64131060';
     private string $listAction = 'ThanhVienSuKien_Admin_64131060';
     private string $pageTitle = 'Thành viên tham gia sự kiện';

@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng quản lý điểm danh trong đúng các nhóm có TroGiang là tài khoản hiện tại.
 class DiemDanh_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'DiemDanh_Assitant_64131060';
     private string $listAction = 'DiemDanh_Assitant_64131060';
     private string $pageTitle = 'Điểm danh (Trợ giảng)';
@@ -10,6 +12,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
         $this->index();
     }
 
+    // Repository lọc danh sách qua NhomHocTap.TroGiang để TVTG chỉ thấy dữ liệu của mình.
     public function index(): void
     {
         $this->requireRoles(['TVTG']);
@@ -23,6 +26,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
         ]);
     }
 
+    // Scope được kiểm tra sau khi tải bản ghi để biết điểm danh thuộc nhóm nào.
     public function Details(...$params): void
     {
         $this->requireRoles(['TVTG']);
@@ -44,6 +48,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
         ]);
     }
 
+    // Trước khi tạo phải kiểm tra cả role, scope nhóm và ràng buộc nghiệp vụ điểm danh.
     public function Create(): void
     {
         $this->requireRoles(['TVTG']);
@@ -63,6 +68,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
         $this->renderForm([], 'Create', 'Thêm điểm danh');
     }
 
+    // Kiểm tra cả nhóm cũ lẫn nhóm mới để request sửa không thể chuyển dữ liệu ra ngoài scope.
     public function Edit(...$params): void
     {
         $this->requireRoles(['TVTG']);
@@ -89,6 +95,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
         $this->renderForm($row, 'Edit', 'Cập nhật điểm danh', '', ['MaDiemDanh' => $id]);
     }
 
+    // Bản ghi chỉ được xóa nếu nhóm sở hữu vẫn thuộc trợ giảng hiện tại.
     public function Delete(...$params): void
     {
         $this->requireRoles(['TVTG']);
@@ -132,6 +139,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
 
     private function relations(string $maNhom = ''): array
     {
+        // Select nhóm đã được lọc scope; select thành viên tiếp tục phụ thuộc nhóm đang chọn.
         $groups = array_map(fn($group) => ['value' => $group['MaNhom'], 'label' => $group['TenNhom']], $this->repo()->listStudyGroups($this->currentMemberId()));
         return [
             'MaNhom' => $groups,
@@ -158,6 +166,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
 
     private function renderForm(array $row, string $action, string $title, string $error = '', array $keys = []): void
     {
+        // View và app-api.js phối hợp qua cờ này để tải lại danh sách thành viên theo nhóm.
         $this->render('generic/form', [
             'cfg' => $this->cfg(),
             'row' => $row,

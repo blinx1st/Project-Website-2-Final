@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm xem và đồng bộ điểm rèn luyện được sinh từ quy tắc tham gia sự kiện.
 class DiemRenLuyen_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'DiemRenLuyen_Admin_64131060';
     private string $listAction = 'DiemRenLuyen_Admin_64131060';
     private string $pageTitle = 'Điểm rèn luyện';

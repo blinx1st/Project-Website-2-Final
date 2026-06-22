@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng chỉ xem log check-in của các sự kiện thuộc phạm vi mình quản lý.
 class CheckinSuKien_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'CheckinSuKien_Assitant_64131060';
     private string $listAction = 'CheckinSuKien_Assitant_64131060';
     private string $pageTitle = 'Log check-in sự kiện (Trợ giảng)';

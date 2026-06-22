@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý điểm danh nhóm học tập và chỉ chọn thành viên thực sự thuộc nhóm.
 class DiemDanh_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'DiemDanh_Admin_64131060';
     private string $listAction = 'DiemDanh_Admin_64131060';
     private string $pageTitle = 'Điểm danh (Chủ nhiệm)';
@@ -10,6 +12,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
         $this->index();
     }
 
+    // Danh sách TVCN không lọc trợ giảng nên hiển thị điểm danh của mọi nhóm.
     public function index(): void
     {
         $this->requireRoles(['TVCN']);
@@ -23,6 +26,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
         ]);
     }
 
+    // Chi tiết dùng mã tự tăng MaDiemDanh để tìm một bản ghi.
     public function Details(...$params): void
     {
         $this->requireRoles(['TVCN']);
@@ -43,6 +47,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
         ]);
     }
 
+    // GET dựng form; POST validate rồi Repository kiểm tra thành viên thuộc nhóm và chống trùng ngày.
     public function Create(): void
     {
         $this->requireRoles(['TVCN']);
@@ -61,6 +66,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
         $this->renderForm([], 'Create', 'Thêm điểm danh');
     }
 
+    // Khi sửa, Repository loại trừ bản ghi hiện tại trong phép kiểm tra trùng.
     public function Edit(...$params): void
     {
         $this->requireRoles(['TVCN']);
@@ -85,6 +91,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
         $this->renderForm($row, 'Edit', 'Cập nhật điểm danh', '', ['MaDiemDanh' => $id]);
     }
 
+    // GET yêu cầu xác nhận; POST mới thực sự xóa bản ghi.
     public function Delete(...$params): void
     {
         $this->requireRoles(['TVCN']);
@@ -127,6 +134,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
 
     private function relations(string $maNhom = ''): array
     {
+        // Danh sách thành viên rỗng cho đến khi biết nhóm, sau đó chỉ lấy người thuộc nhóm đó.
         return [
             'MaNhom' => $this->repo()->options(['table' => 'NhomHocTap', 'value' => 'MaNhom', 'label' => 'TenNhom']),
             'MaThanhVien' => $maNhom !== '' ? $this->repo()->membersForStudyGroup($maNhom) : [],
@@ -152,6 +160,7 @@ class DiemDanh_Admin_64131060Controller extends Controller
 
     private function renderForm(array $row, string $action, string $title, string $error = '', array $keys = []): void
     {
+        // Cờ dependentGroupMembers cho JavaScript biết phải gọi API khi select nhóm thay đổi.
         $this->render('generic/form', [
             'cfg' => $this->cfg(),
             'row' => $row,

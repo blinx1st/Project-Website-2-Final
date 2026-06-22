@@ -1,3 +1,4 @@
+<?php // View nhận trạng thái lỗi/thành công từ controller và gửi ba trường mật khẩu bằng POST. ?>
 <section class="panel auth-panel">
     <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php if (!empty($data['error'])): ?><div class="alert alert-danger"><?= h($data['error']) ?></div><?php endif; ?>

@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng xem danh sách thành viên và chỉ sửa hồ sơ thuộc phạm vi được phép.
 class ThanhVien_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVien_Assitant_64131060';
     private string $listAction = 'TimKiemTV_Assitant_64131060';
     private string $pageTitle = 'Thành viên của câu lạc bộ (Trợ giảng)';

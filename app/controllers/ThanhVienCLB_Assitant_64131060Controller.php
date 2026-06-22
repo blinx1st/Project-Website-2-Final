@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng quản lý thành viên của các CLB nằm trong scope được cấp.
 class ThanhVienCLB_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVienCLB_Assitant_64131060';
     private string $listAction = 'ThanhVienCLB_Assitant_64131060';
     private string $pageTitle = 'Thành viên CLB (Trợ giảng)';

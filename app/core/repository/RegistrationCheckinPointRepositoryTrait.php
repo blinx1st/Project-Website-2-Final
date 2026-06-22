@@ -1,6 +1,8 @@
 <?php
+// Gom toàn bộ vòng đời tham gia sự kiện: đăng ký, check-in, cộng điểm và cấp chứng nhận.
 trait RegistrationCheckinPointRepositoryTrait
 {
+    // Bộ lọc thành viên phục vụ trang cá nhân; bộ lọc trợ giảng bảo vệ phạm vi sự kiện được quản lý.
     public function listEventRegistrations(?string $maThanhVien = null, ?string $assistantId = null): array
     {
         $sql = $this->eventRegistrationSelectSql();
@@ -24,6 +26,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function findEventRegistration(string $maSuKien, string $maThanhVien): ?array
     {
+        // ThanhVienSuKien dùng khóa chính kép nên một đăng ký được nhận diện bởi cả hai mã.
         return $this->fetchOne($this->eventRegistrationSelectSql() . ' WHERE ThanhVienSuKien.MaSuKien = :MaSuKien AND ThanhVienSuKien.MaThanhVien = :MaThanhVien LIMIT 1', [
             'MaSuKien' => $maSuKien,
             'MaThanhVien' => $maThanhVien,
@@ -131,6 +134,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function listPoints(?string $hocKy = null, ?string $namHoc = null, ?string $maThanhVien = null, ?string $assistantId = null): array
     {
+        // Các điều kiện tùy chọn cho phép cùng một hàm cấp dữ liệu cho admin, trợ giảng và thành viên.
         $where = [];
         $params = [];
         if ($hocKy) {
@@ -244,6 +248,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function registerEvent(string $maSuKien, string $maThanhVien): array
     {
+        // Transaction và FOR UPDATE ngăn hai yêu cầu đồng thời cùng chiếm suất cuối của sự kiện.
         $this->db->beginTransaction();
         try {
             $eventStmt = $this->db->prepare('SELECT * FROM SuKien WHERE MaSuKien = :maSuKien FOR UPDATE');
@@ -269,6 +274,7 @@ trait RegistrationCheckinPointRepositoryTrait
             }
 
             if ($existing) {
+                // Bản ghi đã hủy được khôi phục thay vì chèn thêm vì bảng dùng khóa chính kép.
                 $update = $this->db->prepare("UPDATE ThanhVienSuKien SET TrangThaiThamGia = 'Đã đăng ký', NgayDangKy = NOW(), NgayXacNhan = NULL, XacNhanBoi = NULL WHERE MaSuKien = :maSuKien AND MaThanhVien = :maThanhVien");
                 $update->execute(['maSuKien' => $maSuKien, 'maThanhVien' => $maThanhVien]);
                 $this->db->commit();
@@ -287,6 +293,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function cancelEventRegistration(string $maSuKien, string $maThanhVien): array
     {
+        // Hủy là đổi trạng thái để giữ lịch sử, không xóa vật lý bản ghi đăng ký.
         $this->db->beginTransaction();
         try {
             $stmt = $this->db->prepare('SELECT * FROM ThanhVienSuKien WHERE MaSuKien = :maSuKien AND MaThanhVien = :maThanhVien FOR UPDATE');
@@ -319,6 +326,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function confirmAttendance(string $maSuKien, string $maThanhVien, string $xacNhanBoi, string $phuongThuc = 'Thủ công'): array
     {
+        // Một lần xác nhận cập nhật nhiều bảng nên tất cả phải thành công hoặc cùng rollback.
         $this->db->beginTransaction();
         try {
             $stmt = $this->db->prepare('SELECT tvsk.*, sk.TenSuKien, sk.MaLoaiSuKien, sk.HocKy, sk.NamHoc, tv.HoTen
@@ -347,6 +355,7 @@ trait RegistrationCheckinPointRepositoryTrait
                 throw new InvalidArgumentException('Chưa cấu hình điểm rèn luyện cho loại sự kiện/học kỳ/năm học này.');
             }
 
+            // Chuỗi tác vụ: xác nhận đăng ký -> check-in -> điểm -> tổng điểm -> chứng nhận.
             $update = $this->db->prepare("UPDATE ThanhVienSuKien SET TrangThaiThamGia = 'Đã tham gia', NgayXacNhan = NOW(), XacNhanBoi = :xacNhanBoi WHERE MaSuKien = :maSuKien AND MaThanhVien = :maThanhVien");
             $update->execute(['xacNhanBoi' => $xacNhanBoi, 'maSuKien' => $maSuKien, 'maThanhVien' => $maThanhVien]);
 
@@ -404,6 +413,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function checkInEvent(string $maSuKien, string $maThanhVien, string $token): array
     {
+        // QR chỉ là cổng kiểm tra token và thời gian; phần ghi dữ liệu dùng lại confirmAttendance().
         $event = $this->findEvent($maSuKien);
         if (!$event) {
             throw new InvalidArgumentException('Không tìm thấy sự kiện.');
@@ -430,6 +440,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function ensureEventToken(string $maSuKien): string
     {
+        // Token đã có được tái sử dụng để mã QR ổn định; chỉ sinh ngẫu nhiên khi còn trống.
         $event = $this->findEvent($maSuKien);
         if (!$event) {
             throw new InvalidArgumentException('Không tìm thấy sự kiện.');
@@ -450,6 +461,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function syncTrainingPointsFromRules(): array
     {
+        // Đồng bộ toàn bộ là thao tác tái tạo dữ liệu dẫn xuất từ người đã tham gia và bảng quy tắc.
         $this->db->beginTransaction();
         try {
             $missingSql = "SELECT sk.MaLoaiSuKien, COALESCE(lsk.TenLoaiSuKien, sk.MaLoaiSuKien) AS TenLoaiSuKien, sk.HocKy, sk.NamHoc, GROUP_CONCAT(DISTINCT sk.MaSuKien ORDER BY sk.MaSuKien SEPARATOR ', ') AS SuKienThieu
@@ -461,6 +473,7 @@ trait RegistrationCheckinPointRepositoryTrait
                 GROUP BY sk.MaLoaiSuKien, TenLoaiSuKien, sk.HocKy, sk.NamHoc
                 ORDER BY sk.NamHoc DESC, sk.HocKy ASC, sk.MaLoaiSuKien ASC";
             $missing = $this->db->query($missingSql)->fetchAll();
+            // Dừng trước khi xóa dữ liệu cũ nếu có sự kiện chưa được cấu hình quy tắc điểm.
             if ($missing) {
                 $parts = array_map(static function (array $row): string {
                     return sprintf('%s (%s, %s, sự kiện: %s)', $row['TenLoaiSuKien'], $row['HocKy'], $row['NamHoc'], $row['SuKienThieu']);
@@ -468,6 +481,7 @@ trait RegistrationCheckinPointRepositoryTrait
                 throw new InvalidArgumentException('Chưa cấu hình điểm rèn luyện cho: ' . implode('; ', $parts) . '.');
             }
 
+            // Xóa tổng trước chi tiết để tuân theo thứ tự phụ thuộc dữ liệu.
             $this->db->exec('DELETE FROM TongDiemRenLuyen');
             $this->db->exec('DELETE FROM DiemRenLuyen');
 
@@ -503,6 +517,7 @@ trait RegistrationCheckinPointRepositoryTrait
 
     public function termPointTotals(string $hocKy, string $namHoc, ?string $maCLB = null): array
     {
+        // Có CLB thì tính trực tiếp từ chi tiết sự kiện; không có CLB thì dùng bảng tổng đã đồng bộ.
         if ($maCLB) {
             return $this->fetchAll('SELECT DiemRenLuyen.MaThanhVien, ThanhVien.HoTen, ThanhVien.Email, DiemRenLuyen.HocKy, DiemRenLuyen.NamHoc, SUM(DiemRenLuyen.SoDiem) AS TongDiem, MAX(DiemRenLuyen.NgayCong) AS CapNhatLuc
                 FROM DiemRenLuyen

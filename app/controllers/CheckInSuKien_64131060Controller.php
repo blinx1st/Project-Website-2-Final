@@ -1,4 +1,5 @@
 <?php
+// Điểm vào dành cho thành viên quét QR và xác nhận tham gia một sự kiện.
 class CheckInSuKien_64131060Controller extends Controller
 {
     public function Scan(): void

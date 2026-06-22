@@ -1,5 +1,7 @@
+<?php // Dashboard hiển thị cấu trúc stats do ReportRepositoryTrait tổng hợp theo bộ lọc. ?>
 <section class="panel report-panel">
     <h1 class="page-title"><?= h($data['title']) ?></h1>
+    <?php // Bộ lọc đi bằng GET để URL có thể tải lại hoặc chia sẻ mà vẫn giữ phạm vi thống kê. ?>
     <form class="search-form" method="get" action="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">
         <select class="form-control" name="HocKy">
             <option value="">Tất cả học kỳ</option>
@@ -17,6 +19,7 @@
         <button class="btn-main" type="submit">LỌC THỐNG KÊ</button>
     </form>
 
+    <?php // summary cấp số liệu cho bốn thẻ; byClub và topStudents cấp hai bảng phía dưới. ?>
     <div class="report-grid">
         <div class="report-card"><span>Tổng sự kiện</span><strong><?= h($data['stats']['summary']['SoSuKien'] ?? 0) ?></strong></div>
         <div class="report-card"><span>Lượt đăng ký</span><strong><?= h($data['stats']['summary']['SoDangKy'] ?? 0) ?></strong></div>

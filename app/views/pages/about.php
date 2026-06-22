@@ -1,3 +1,4 @@
+<?php // Trang giới thiệu dùng homeAction để quay về đúng trang chủ của từng vai trò. ?>
 <section class="about-page">
     <div class="about-hero">
         <img src="<?= asset_url('Image/BannerVNU.jpg') ?>" alt="CLB Tin Học VNUIS">

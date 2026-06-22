@@ -1,6 +1,8 @@
 <?php
+// Xử lý đăng nhập, đăng xuất và đổi mật khẩu; đây là nơi tạo/xóa dữ liệu xác thực trong session.
 class Login_64131060Controller extends Controller
 {
+    // GET hiển thị form; POST xác thực email/mật khẩu và tạo session cho các request tiếp theo.
     public function Login_64131060(): void
     {
         if ($this->isPost()) {
@@ -11,10 +13,12 @@ class Login_64131060Controller extends Controller
                 $this->render('auth/login', ['title' => 'Đăng nhập', 'error' => 'Email hoặc mật khẩu không đúng.']);
                 return;
             }
+            // MaVaiTro là nguồn dữ liệu mà requireRoles() dùng để chặn hoặc cho phép controller.
             $_SESSION['Email'] = $member['Email'];
             $_SESSION['MaVaiTro'] = $member['MaVaiTro'];
             $_SESSION['MaThanhVien'] = $member['MaThanhVien'];
             $_SESSION['HoTen'] = $member['HoTen'] ?? '';
+            // Mỗi vai trò được đưa về đúng trang chủ và menu tương ứng sau khi đăng nhập.
             if ($member['MaVaiTro'] === 'TVCN') {
                 redirect_to('TrangChu_64131060', 'AdminPage_64131060');
             }
@@ -30,6 +34,7 @@ class Login_64131060Controller extends Controller
         $this->render('auth/login', ['title' => 'Đăng nhập']);
     }
 
+    // Xóa toàn bộ dấu vết đăng nhập và tạo session rỗng trước khi quay lại form.
     public function Logout_64131060(): void
     {
         session_unset();
@@ -38,6 +43,7 @@ class Login_64131060Controller extends Controller
         redirect_to('Login_64131060', 'Login_64131060');
     }
 
+    // Chỉ người đã đăng nhập mới đổi được mật khẩu; GET/POST dùng chung một view.
     public function DoiMatKhau_64131060(): void
     {
         $this->requireLogin();
@@ -48,6 +54,7 @@ class Login_64131060Controller extends Controller
             $new = trim($_POST['MatKhauMoi'] ?? '');
             $confirm = trim($_POST['NhapLaiMatKhau'] ?? '');
             try {
+                // Controller kiểm tra dữ liệu biểu mẫu; Repository chịu trách nhiệm kiểm tra mật khẩu cũ và ghi hash mới.
                 if ($old === '' || $new === '' || $confirm === '') {
                     throw new InvalidArgumentException('Vui lòng nhập đầy đủ thông tin mật khẩu.');
                 }

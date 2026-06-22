@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng chỉ xem điểm phát sinh từ các sự kiện trong phạm vi quản lý.
 class DiemRenLuyen_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'DiemRenLuyen_Assitant_64131060';
     private string $listAction = 'DiemRenLuyen_Assitant_64131060';
     private string $pageTitle = 'Điểm rèn luyện (Trợ giảng)';

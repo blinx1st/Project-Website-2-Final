@@ -1,6 +1,8 @@
 <?php
+// Thành viên (TV) chỉ đọc nguồn tin bài đăng sau khi đăng nhập.
 class BaiDang_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'BaiDang_Member_64131060';
     private string $listAction = 'BaiDang_Member_64131060';
     private string $pageTitle = 'Bài đăng';

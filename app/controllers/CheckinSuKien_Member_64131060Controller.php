@@ -1,6 +1,8 @@
 <?php
+// Thành viên chỉ xem lịch sử check-in của chính tài khoản đang đăng nhập.
 class CheckinSuKien_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'CheckinSuKien_Member_64131060';
     private string $listAction = 'CheckinSuKien_Member_64131060';
     private string $pageTitle = 'Lịch sử check-in';

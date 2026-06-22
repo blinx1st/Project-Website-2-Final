@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý tài khoản thành viên và dùng cùng resource cho trang hồ sơ cá nhân.
 class ThanhVien_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVien_Admin_64131060';
     private string $listAction = 'TimKiemTV_Admin_64131060';
     private string $pageTitle = 'Thành viên của câu lạc bộ (Chủ nhiệm)';

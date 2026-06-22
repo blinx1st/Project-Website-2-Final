@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm cấu hình số điểm theo loại sự kiện, học kỳ và năm học.
 class QuyTacDiemRenLuyen_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'QuyTacDiemRenLuyen_Admin_64131060';
     private string $listAction = 'QuyTacDiemRenLuyen_Admin_64131060';
     private string $pageTitle = 'Quy tắc điểm rèn luyện';

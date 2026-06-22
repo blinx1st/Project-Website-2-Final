@@ -1,6 +1,8 @@
 <?php
+// Thành viên chỉ xem lịch sử đăng ký; tạo/hủy được thực hiện qua API nghiệp vụ.
 class ThanhVienSuKien_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVienSuKien_Member_64131060';
     private string $listAction = 'ThanhVienSuKien_Member_64131060';
     private string $pageTitle = 'Sự kiện đã đăng ký';

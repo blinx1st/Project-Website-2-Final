@@ -1,3 +1,4 @@
+<?php // View xác nhận xóa dùng cfg để liệt kê field và keys để giữ đủ khóa chính khi POST. ?>
 <section class="panel">
     <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php if (!empty($data['error'])): ?><div class="alert alert-danger"><?= h($data['error']) ?></div><?php endif; ?>
@@ -8,6 +9,7 @@
         <?php endforeach; ?>
     </table>
     <form method="post" action="">
+        <?php // Hidden truyền lại đầy đủ khóa chính, kể cả resource dùng khóa kép. ?>
         <?php foreach ($data['keys'] as $pk => $value): ?><input type="hidden" name="<?= h($pk) ?>" value="<?= h($value) ?>"><?php endforeach; ?>
         <div class="toolbar">
             <button class="btn-danger-soft" type="submit">XÓA</button>

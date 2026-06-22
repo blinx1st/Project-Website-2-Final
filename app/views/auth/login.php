@@ -1,3 +1,4 @@
+<?php // Form đăng nhập gửi email/mật khẩu về LoginController; view không tự xác thực tài khoản. ?>
 <section class="login-panel">
     <div class="login-brand">
         <img src="<?= asset_url('Image/LogoVNU.jpg') ?>" alt="Câu lạc bộ tin học VNUIS">

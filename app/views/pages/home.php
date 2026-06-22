@@ -1,3 +1,4 @@
+<?php // Controller cấu hình nút chính và mảng cards để cùng view phục vụ bốn loại trang chủ. ?>
 <section class="panel">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;align-items:center;">
         <div>
@@ -14,6 +15,7 @@
 <section class="panel" style="margin-top:18px;">
     <h2 class="page-title">Chức năng chính</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+        <?php // Mỗi role được controller cấp một tập card chức năng khác nhau. ?>
         <?php foreach (($data['cards'] ?? []) as $card): ?>
             <a class="panel" style="box-shadow:none;display:block;" href="<?= h($card['url']) ?>">
                 <h3 style="font-size:20px;color:#063b87;"><?= h($card['title']) ?></h3>

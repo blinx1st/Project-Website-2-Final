@@ -1,8 +1,10 @@
 <?php
+// Nhóm truy vấn tài khoản thành viên: danh sách, tìm kiếm, CRUD, đăng nhập và đổi mật khẩu.
 trait MemberRepositoryTrait
 {
     public function listMembers(?string $maThanhVien = null): array
     {
+        // Khi có mã thành viên, WHERE giúp trang Thành viên chỉ lấy đúng hồ sơ của chính họ.
         $sql = 'SELECT ThanhVien.*, VaiTro.TenVaiTro
             FROM ThanhVien
             LEFT JOIN VaiTro ON VaiTro.MaVaiTro = ThanhVien.MaVaiTro';
@@ -17,6 +19,7 @@ trait MemberRepositoryTrait
 
     public function searchMembers(string $maThanhVien, string $hoTen): array
     {
+        // Điều kiện rỗng hoạt động như wildcard để cùng một query hỗ trợ tìm theo mã, tên hoặc cả hai.
         return $this->fetchAll("SELECT ThanhVien.*, VaiTro.TenVaiTro
             FROM ThanhVien
             LEFT JOIN VaiTro ON VaiTro.MaVaiTro = ThanhVien.MaVaiTro
@@ -41,6 +44,7 @@ trait MemberRepositoryTrait
 
     public function findMemberByEmail(?string $email): ?array
     {
+        // Email trong session được dùng để khôi phục MaThanhVien khi session cũ chưa lưu mã.
         if (!$email) {
             return null;
         }
@@ -85,11 +89,13 @@ trait MemberRepositoryTrait
 
     public function login(string $email, string $password): ?array
     {
+        // Bản ghi trả về chứa MaVaiTro; Login Controller sao chép role vào session để phân quyền.
         return $this->fetchOne('SELECT * FROM ThanhVien WHERE Email = :email AND MatKhau = :password LIMIT 1', ['email' => $email, 'password' => $password]);
     }
 
     public function updatePassword(string $maThanhVien, string $oldPassword, string $newPassword): void
     {
+        // Xác nhận mật khẩu cũ trước khi UPDATE để tránh đổi mật khẩu chỉ bằng mã thành viên.
         $member = $this->findMember($maThanhVien);
         if (!$member || (string)$member['MatKhau'] !== $oldPassword) {
             throw new InvalidArgumentException('Mật khẩu cũ không đúng.');

@@ -1,6 +1,8 @@
 <?php
+// Thành viên chỉ đọc các chứng nhận mang mã thành viên của chính mình.
 class ChungNhan_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ChungNhan_Member_64131060';
     private string $listAction = 'ChungNhan_Member_64131060';
     private string $pageTitle = 'Chứng nhận của tôi';

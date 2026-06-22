@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý quan hệ thành viên - CLB có khóa chính kép.
 class ThanhVienCLB_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ThanhVienCLB_Admin_64131060';
     private string $listAction = 'ThanhVienCLB_Admin_64131060';
     private string $pageTitle = 'Thành viên CLB';

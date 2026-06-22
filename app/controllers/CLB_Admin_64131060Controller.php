@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý toàn bộ câu lạc bộ qua cấu hình resource CLB.
 class CLB_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'CLB_Admin_64131060';
     private string $listAction = 'CLB_Admin_64131060';
     private string $pageTitle = 'Câu lạc bộ';

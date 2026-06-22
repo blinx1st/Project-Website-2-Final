@@ -1,6 +1,8 @@
 <?php
+// Thành viên chỉ xem tổng điểm theo học kỳ/năm học của chính mình.
 class TongDiemRenLuyen_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'TongDiemRenLuyen_Member_64131060';
     private string $listAction = 'TongDiemRenLuyen_Member_64131060';
     private string $pageTitle = 'Tổng điểm rèn luyện của tôi';

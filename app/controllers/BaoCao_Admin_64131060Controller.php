@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm quản lý báo cáo và xem các số liệu tổng hợp của hệ thống.
 class BaoCao_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'BaoCao_Admin_64131060';
     private string $listAction = 'BaoCao_Admin_64131060';
     private string $pageTitle = 'Báo cáo';

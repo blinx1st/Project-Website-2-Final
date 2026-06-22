@@ -1,6 +1,8 @@
 <?php
+// Trang sự kiện công khai hỗ trợ xem/tìm kiếm nhưng chặn mọi thao tác ghi.
 class SuKien_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'SuKien_64131060';
     private string $listAction = 'TimKiemSuKien_64131060';
     private string $pageTitle = 'Trang sự kiện';

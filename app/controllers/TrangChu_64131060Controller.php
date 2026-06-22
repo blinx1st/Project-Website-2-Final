@@ -1,4 +1,5 @@
 <?php
+// Điều phối trang chủ và trang giới thiệu tương ứng với khách, TVCN, TVTG và TV.
 class TrangChu_64131060Controller extends Controller
 {
     public function TrangChu_64131060(): void

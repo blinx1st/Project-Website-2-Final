@@ -1,8 +1,10 @@
 (function () {
+    // IIFE giữ biến nội bộ không rò ra global; baseUrl do layout PHP truyền xuống.
     const baseUrl = (window.APP_BASE_URL || '').replace(/\/$/, '');
     const apiMessage = document.getElementById('api-message');
 
     function showMessage(message, ok) {
+        // Ưu tiên vùng thông báo trong trang, chỉ dùng alert khi view không có vùng này.
         if (!apiMessage) {
             alert(message);
             return;
@@ -13,6 +15,7 @@
     }
 
     async function readJson(response) {
+        // Chuẩn hóa mọi API về một luồng lỗi duy nhất cho các khối try/catch phía dưới.
         const payload = await response.json().catch(() => ({}));
         if (!response.ok || payload.success === false) {
             throw new Error(payload.message || 'Thao tác không thành công.');
@@ -21,6 +24,7 @@
     }
 
     document.addEventListener('click', async function (event) {
+        // Event delegation cho phép một listener xử lý cả các nút được render động trong bảng.
         const confirmButton = event.target.closest('.js-confirm-attendance');
         if (confirmButton) {
             confirmButton.disabled = true;
@@ -54,6 +58,7 @@
 
         const registerButton = event.target.closest('.js-register-event');
         if (registerButton) {
+            // Khóa nút trong lúc chờ để tránh gửi nhiều đăng ký liên tiếp.
             registerButton.disabled = true;
             try {
                 const url = baseUrl + '/Api_64131060/DangKySuKien?MaSuKien=' + encodeURIComponent(registerButton.dataset.event || '');
@@ -73,6 +78,7 @@
 
         const cancelButton = event.target.closest('.js-cancel-registration');
         if (cancelButton) {
+            // Hủy làm thay đổi dữ liệu nên gửi POST với body dạng form URL encoded.
             cancelButton.disabled = true;
             try {
                 const body = new URLSearchParams({ MaSuKien: cancelButton.dataset.event || '' });
@@ -94,6 +100,7 @@
     });
 
     document.querySelectorAll('form[data-dependent-group-members]').forEach(function (form) {
+        // Chỉ form điểm danh có cờ này; select thành viên phải phụ thuộc nhóm đang chọn.
         const groupSelect = form.querySelector('[name="MaNhom"]');
         const memberSelect = form.querySelector('[name="MaThanhVien"]');
         if (!groupSelect || !memberSelect) {
@@ -101,6 +108,7 @@
         }
 
         async function loadMembers(preserveValue) {
+            // Xóa option cũ trước khi gọi API để không chọn nhầm thành viên của nhóm trước đó.
             const groupId = groupSelect.value || '';
             memberSelect.disabled = true;
             memberSelect.innerHTML = '<option value="">-- Chọn --</option>';
@@ -117,6 +125,7 @@
                     }
                 }).then(readJson);
                 (payload.data || []).forEach(function (item) {
+                    // API trả value/label đúng định dạng để có thể dựng option trực tiếp.
                     const option = document.createElement('option');
                     option.value = item.value;
                     option.textContent = item.label;
@@ -130,6 +139,7 @@
             }
         }
 
+        // Khi mở form Edit, giữ lại lựa chọn hiện có sau khi danh sách mới được tải.
         const initialMember = memberSelect.value || '';
         groupSelect.addEventListener('change', function () {
             loadMembers('');
@@ -140,6 +150,7 @@
     });
 
     document.addEventListener('submit', function (event) {
+        // Kiểm tra client giúp phản hồi sớm; Validator PHP vẫn là lớp kiểm tra bắt buộc phía server.
         const form = event.target.closest('form[data-validate-resource]');
         if (!form) {
             return;

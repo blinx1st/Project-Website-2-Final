@@ -4,6 +4,7 @@ class Validator
 {
     public static function validateResource(array $cfg, array $data): void
     {
+        // Duyệt metadata trong resources.php để mọi form CRUD dùng chung cùng quy tắc backend.
         $errors = [];
         foreach ($cfg['fields'] as $field => $meta) {
             if (($meta['readonly'] ?? false) && in_array($field, $cfg['auto'] ?? [], true)) {
@@ -37,6 +38,7 @@ class Validator
             }
         }
 
+        // Các quy tắc liên trường không thể kiểm tra chỉ bằng metadata của từng field riêng lẻ.
         $table = $cfg['table'] ?? '';
         if ($table === 'SuKien' && !empty($data['NgayBatDau']) && !empty($data['NgayKetThuc'])) {
             $start = strtotime((string)$data['NgayBatDau']);
@@ -65,12 +67,14 @@ class Validator
         }
 
         if ($errors) {
+            // CrudSupport bắt exception này và render lại form cùng dữ liệu người dùng vừa nhập.
             throw new InvalidArgumentException(implode(' ', $errors));
         }
     }
 
     public static function validateImageUpload(array $file, int $maxBytes = 2097152): void
     {
+        // Kiểm tra cả phần mở rộng lẫn MIME thật; chỉ tin tên file là không đủ an toàn.
         if (($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
             return;
         }

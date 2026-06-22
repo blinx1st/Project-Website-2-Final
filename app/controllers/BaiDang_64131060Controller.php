@@ -1,6 +1,8 @@
 <?php
+// Controller công khai chỉ cho xem danh sách/chi tiết bài đăng, không cho sửa nội dung.
 class BaiDang_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'BaiDang_64131060';
     private string $listAction = 'BaiDang_64131060';
     private string $pageTitle = 'Bài đăng';

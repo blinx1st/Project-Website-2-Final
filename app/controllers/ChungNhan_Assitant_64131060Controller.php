@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng quản lý chứng nhận trong các sự kiện mình có quyền phụ trách.
 class ChungNhan_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'ChungNhan_Assitant_64131060';
     private string $listAction = 'ChungNhan_Assitant_64131060';
     private string $pageTitle = 'Chứng nhận (Trợ giảng)';

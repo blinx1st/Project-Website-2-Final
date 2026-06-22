@@ -1,4 +1,7 @@
-<?php $isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_64131060' && ($data['action'] ?? '') === 'Create'); ?>
+<?php
+// cfg mô tả field; row chứa giá trị; relations cung cấp lựa chọn cho các field kiểu select.
+$isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_64131060' && ($data['action'] ?? '') === 'Create');
+?>
 <section class="panel <?= $isRegistrationForm ? 'registration-panel' : '' ?>">
     <?php if ($isRegistrationForm): ?>
         <div class="registration-heading">
@@ -10,8 +13,10 @@
         <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php endif; ?>
     <?php if (!empty($data['error'])): ?><div class="alert alert-danger"><?= h($data['error']) ?></div><?php endif; ?>
+    <?php // Form luôn hỗ trợ upload; các data-* là tín hiệu để app-api.js gắn validation và select phụ thuộc. ?>
     <form method="post" enctype="multipart/form-data" action="" data-validate-resource="1" <?= !empty($data['dependentGroupMembers']) ? 'data-dependent-group-members="1"' : '' ?>>
         <?php foreach (($data['keys'] ?? []) as $pk => $value): ?><input type="hidden" name="<?= h($pk) ?>" value="<?= h($value) ?>"><?php endforeach; ?>
+        <?php // Form đăng ký có bố cục riêng nhưng vẫn lấy field từ cùng cấu hình resource. ?>
         <?php if ($isRegistrationForm): ?>
             <div class="registration-table-wrap">
                 <table class="registration-table">
@@ -42,6 +47,7 @@
             <div class="form-grid">
                 <?php foreach ($data['cfg']['fields'] as $field => $meta): ?>
                     <?php
+                    // Chuyển metadata phía server thành thuộc tính HTML phục vụ nhập liệu và kiểm tra cơ bản.
                     $type = $meta['type'] ?? 'text';
                     $value = $data['row'][$field] ?? '';
                     $isPk = in_array($field, $data['cfg']['pk'], true);
@@ -55,6 +61,7 @@
                         <label for="<?= h($field) ?>"><?= h($meta['label'] ?? $field) ?></label>
                         <?php if ($type === 'textarea'): ?>
                             <textarea class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" <?= $required ?> <?= $maxLength ?>><?= h($value) ?></textarea>
+                        <?php // Mỗi kiểu field được render thành đúng control; select lấy option từ relations. ?>
                         <?php elseif ($type === 'select'): ?>
                             <select class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" <?= $required ?> <?= $disabled ? 'disabled' : '' ?>>
                                 <option value="">-- Chọn --</option>
@@ -62,6 +69,7 @@
                                     <option value="<?= h($option['value']) ?>" <?= (string)$value === (string)$option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <?php // Control disabled không được trình duyệt submit nên cần hidden giữ lại giá trị khóa. ?>
                             <?php if ($disabled): ?><input type="hidden" name="<?= h($field) ?>" value="<?= h($value) ?>"><?php endif; ?>
                         <?php elseif ($type === 'select_static'): ?>
                             <select class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" <?= $required ?>>
@@ -76,6 +84,7 @@
                         <?php elseif ($type === 'date'): ?>
                             <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="date" value="<?= h(format_date_for_input($value)) ?>" <?= $required ?>>
                         <?php elseif ($type === 'image'): ?>
+                            <?php // Hidden giữ tên ảnh cũ nếu người dùng không chọn file thay thế. ?>
                             <?php if ($value): ?><div><img class="thumb" src="<?= asset_url('Image/' . $value) ?>" alt="<?= h($value) ?>"></div><?php endif; ?>
                             <input type="hidden" name="<?= h($field) ?>" value="<?= h($value) ?>">
                             <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>_upload" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" <?= (!$value && $required) ? 'required' : '' ?>>

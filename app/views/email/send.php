@@ -1,3 +1,4 @@
+<?php // Form thu thập người nhận, tiêu đề, nội dung; địa chỉ gửi do cấu hình server quyết định. ?>
 <section class="panel mail-panel">
     <h1 class="page-title"><?= h($data['title'] ?? 'Gửi email') ?></h1>
     <?php if (!empty($data['error'])): ?><div class="alert alert-danger"><?= h($data['error']) ?></div><?php endif; ?>

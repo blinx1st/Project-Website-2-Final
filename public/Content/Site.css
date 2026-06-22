@@ -1,4 +1,5 @@
 ﻿/* Set padding to keep content from hitting the edges */
+/* Thiết lập nền tảng chung và khoảng đệm cho vùng nội dung. */
 html,
 body {
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
@@ -24,6 +25,7 @@ textarea {
   max-width: 280px;
 }
 
+/* Trang giới thiệu: hero, số liệu, lưới nội dung và bố cục chia đôi. */
 .about-page {
   display: grid;
   gap: 24px;
@@ -215,6 +217,7 @@ textarea {
   margin-top: 8px;
 }
 
+/* Cụm giao diện xác thực: trang đăng nhập hai cột. */
 .login-panel {
   max-width: 980px;
   margin: 34px auto;
@@ -353,6 +356,7 @@ textarea {
 .login-actions .btn-back {
   transform: translateX(-10px);
 }
+/* Form đăng ký thành viên có bố cục bảng riêng so với generic form. */
 .registration-panel {
   max-width: 820px;
   margin: 34px auto;
@@ -481,6 +485,7 @@ textarea {
   overflow: visible;
 }
 
+/* Feed bài đăng mô phỏng dạng bảng tin, kèm action quản trị khi có quyền. */
 .post-panel .page-title {
   max-width: 760px;
   margin: 0 auto 16px;
@@ -594,6 +599,7 @@ textarea {
   background: #fff;
 }
 
+/* Các màn hình nghiệp vụ: QR check-in và dashboard báo cáo. */
 .qr-layout {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) 340px;
@@ -650,6 +656,7 @@ textarea {
   font-size: 30px;
 }
 
+/* Chứng nhận có quy tắc in riêng để chỉ giữ phần nội dung cần xuất PDF. */
 .certificate-page {
   max-width: 980px;
   margin: 0 auto;
@@ -703,6 +710,7 @@ textarea {
   align-items: flex-end;
 }
 
+/* Khi in, ẩn điều hướng và bỏ hiệu ứng trang trí không cần thiết. */
 @media print {
   .topbar,
   .footer,
@@ -722,6 +730,7 @@ textarea {
   }
 }
 
+/* Thu gọn các lưới về một cột trên màn hình nhỏ. */
 @media (max-width: 720px) {
   .about-hero {
     min-height: 520px;

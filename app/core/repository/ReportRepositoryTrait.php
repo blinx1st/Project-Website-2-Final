@@ -1,4 +1,5 @@
 <?php
+// Quản lý báo cáo và tổng hợp số liệu cho dashboard quản trị.
 trait ReportRepositoryTrait
 {
     public function listReports(): array
@@ -42,6 +43,7 @@ trait ReportRepositoryTrait
 
     public function dashboardStats(?string $hocKy = null, ?string $namHoc = null, ?string $maCLB = null): array
     {
+        // Tạo điều kiện một lần rồi tái sử dụng cho các chỉ số cùng phạm vi lọc.
         $eventWhere = [];
         $params = [];
         if ($hocKy) {
@@ -57,8 +59,10 @@ trait ReportRepositoryTrait
             $params['maCLB'] = $maCLB;
         }
         $eventCondition = $eventWhere ? ' WHERE ' . implode(' AND ', $eventWhere) : '';
+        // Phiên bản có AND dùng khi điều kiện sự kiện được nối ngay trong mệnh đề JOIN.
         $joinEventCondition = $eventWhere ? ' AND ' . implode(' AND ', $eventWhere) : '';
 
+        // Bốn truy vấn đầu tạo các thẻ tổng quan: sự kiện, đăng ký, check-in và điểm.
         $events = $this->db->prepare('SELECT COUNT(*) FROM SuKien' . $eventCondition);
         $events->execute($params);
         $registrations = $this->db->prepare("SELECT COUNT(*) FROM ThanhVienSuKien INNER JOIN SuKien ON SuKien.MaSuKien = ThanhVienSuKien.MaSuKien" . ($eventWhere ? ' WHERE ' . implode(' AND ', $eventWhere) . " AND ThanhVienSuKien.TrangThaiThamGia <> 'Đã hủy'" : " WHERE ThanhVienSuKien.TrangThaiThamGia <> 'Đã hủy'"));
@@ -68,6 +72,7 @@ trait ReportRepositoryTrait
         $points = $this->db->prepare('SELECT COALESCE(SUM(DiemRenLuyen.SoDiem), 0) FROM DiemRenLuyen INNER JOIN SuKien ON SuKien.MaSuKien = DiemRenLuyen.MaSuKien' . $eventCondition);
         $points->execute($params);
 
+        // Hai truy vấn sau tạo bảng thống kê theo CLB và bảng xếp hạng thành viên.
         $byClub = $this->db->prepare("SELECT CLB.MaCLB, CLB.TenCLB, COUNT(DISTINCT SuKien.MaSuKien) AS SoSuKien, COUNT(DISTINCT CheckinSuKien.MaCheckin) AS SoCheckin, COALESCE(SUM(DISTINCT DiemRenLuyen.SoDiem), 0) AS TongDiem FROM CLB LEFT JOIN SuKien ON SuKien.MaCLB = CLB.MaCLB" . $joinEventCondition . ' LEFT JOIN CheckinSuKien ON CheckinSuKien.MaSuKien = SuKien.MaSuKien LEFT JOIN DiemRenLuyen ON DiemRenLuyen.MaSuKien = SuKien.MaSuKien GROUP BY CLB.MaCLB, CLB.TenCLB ORDER BY CLB.TenCLB ASC');
         $byClub->execute($params);
 
@@ -75,6 +80,7 @@ trait ReportRepositoryTrait
         $top->execute($params);
 
         return [
+            // Controller truyền nguyên cấu trúc này sang view dashboard để hiển thị từng khu vực.
             'summary' => [
                 'SoSuKien' => (int)$events->fetchColumn(),
                 'SoDangKy' => (int)$registrations->fetchColumn(),

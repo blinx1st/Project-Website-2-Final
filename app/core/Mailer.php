@@ -1,8 +1,10 @@
 <?php
+// Gửi email HTML trực tiếp qua SMTP; controller chỉ cần truyền địa chỉ, tiêu đề và nội dung.
 class Mailer
 {
     public function send(string $from, string $password, string $to, string $subject, string $body): void
     {
+        // Tham số truyền vào được ưu tiên; cấu hình là giá trị dự phòng cho form không nhập tài khoản gửi.
         $config = require APP_PATH . '/config/mail.php';
         $from = trim($from) !== '' ? trim($from) : trim((string)($config['from'] ?? ''));
         $password = trim($password) !== '' ? trim($password) : trim((string)($config['password'] ?? ''));
@@ -13,6 +15,7 @@ class Mailer
         if ($to === '') {
             throw new RuntimeException('Vui lòng nhập email nhận.');
         }
+        // Mở socket TCP, nâng cấp TLS rồi xác thực Gmail bằng chuỗi lệnh AUTH LOGIN.
         $socket = stream_socket_client('tcp://' . $config['host'] . ':' . (int)$config['port'], $errno, $errstr, (int)$config['timeout']);
         if (!$socket) {
             throw new RuntimeException('Không thể kết nối SMTP: ' . $errstr);
@@ -30,6 +33,7 @@ class Mailer
         $this->command($socket, 'MAIL FROM:<' . $from . '>', 250);
         $this->command($socket, 'RCPT TO:<' . $to . '>', [250, 251]);
         $this->command($socket, 'DATA', 354);
+        // Header xác định email HTML UTF-8 trước khi gửi phần body qua lệnh DATA.
         $headers = [
             'From: ' . $from,
             'To: ' . $to,
@@ -45,12 +49,14 @@ class Mailer
 
     private function command($socket, string $command, $expected): string
     {
+        // Mọi lệnh SMTP đều phải kết thúc CRLF và được kiểm tra mã phản hồi ngay sau đó.
         fwrite($socket, $command . "\r\n");
         return $this->expect($socket, $expected);
     }
 
     private function expect($socket, $expected): string
     {
+        // Phản hồi SMTP có thể gồm nhiều dòng; dòng cuối dùng khoảng trắng sau mã trạng thái.
         $response = '';
         while (($line = fgets($socket, 515)) !== false) {
             $response .= $line;

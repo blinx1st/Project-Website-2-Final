@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm (TVCN) quản lý đầy đủ vòng đời CRUD của bài đăng.
 class BaiDang_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'BaiDang_Admin_64131060';
     private string $listAction = 'BaiDang_Admin_64131060';
     private string $pageTitle = 'Bài đăng';

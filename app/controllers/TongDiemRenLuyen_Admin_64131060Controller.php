@@ -1,6 +1,8 @@
 <?php
+// Chủ nhiệm xem bảng tổng điểm dẫn xuất; các thao tác ghi trực tiếp bị khóa.
 class TongDiemRenLuyen_Admin_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'TongDiemRenLuyen_Admin_64131060';
     private string $listAction = 'TongDiemRenLuyen_Admin_64131060';
     private string $pageTitle = 'Tổng điểm rèn luyện';

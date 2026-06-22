@@ -1,3 +1,4 @@
+<?php // Layout bọc $content của view con, dựng menu theo role và nạp CSS/JavaScript dùng chung. ?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -437,6 +438,7 @@
             </a>
             <div class="topbar-nav-area">
                 <nav class="navlinks">
+                    <?php // MaVaiTro trong session quyết định bộ menu; TVCN = chủ nhiệm, TVTG = trợ giảng, TV = thành viên. ?>
                     <?php if (current_role() === 'TVCN'): ?>
                         <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_AdminPage_64131060') ?>">GIỚI THIỆU</a>
                         <a href="<?= url_for('BaiDang_Admin_64131060', 'BaiDang_Admin_64131060') ?>">TIN TỨC</a>
@@ -484,6 +486,7 @@
                     <?php endif; ?>
                 </nav>
                 <div class="topbar-actions">
+                    <?php // Có role thì hiện menu tài khoản; khách chưa đăng nhập chỉ thấy nút đăng nhập. ?>
                     <?php if (current_role()): ?>
                         <div class="dropdown account-menu">
                             <button class="account-toggle dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -503,8 +506,10 @@
             </div>
         </div>
     </header>
+    <?php // $content là HTML của view con đã được Controller::render() thu bằng output buffering. ?>
     <main class="page"><?= $content ?></main>
     <footer class="footer">CLB TIN HỌC KHOA CNTT - VNUIS | Copyright &copy; VNUIS - <?= date('Y') ?></footer>
+    <?php // JavaScript dùng APP_BASE_URL để tạo URL API đúng cả khi project nằm trong thư mục con. ?>
     <script>
         window.APP_BASE_URL = "<?= h(base_url()) ?>";
     </script>

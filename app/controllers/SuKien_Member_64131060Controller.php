@@ -1,6 +1,8 @@
 <?php
+// Thành viên xem/tìm sự kiện và dùng các action nghiệp vụ đăng ký riêng qua API.
 class SuKien_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'SuKien_Member_64131060';
     private string $listAction = 'TimKiemSuKien_Member_64131060';
     private string $pageTitle = 'Trang sự kiện (Thành viên)';

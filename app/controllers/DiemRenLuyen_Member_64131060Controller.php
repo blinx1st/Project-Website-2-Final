@@ -1,6 +1,8 @@
 <?php
+// Thành viên chỉ đọc các dòng điểm rèn luyện của chính mình.
 class DiemRenLuyen_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'DiemRenLuyen_Member_64131060';
     private string $listAction = 'DiemRenLuyen_Member_64131060';
     private string $pageTitle = 'Điểm rèn luyện của tôi';

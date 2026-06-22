@@ -1,3 +1,4 @@
+<?php // Mẫu chứng nhận dùng dữ liệu cert và ẩn thanh công cụ khi trình duyệt thực hiện in. ?>
 <section class="certificate-page">
     <div class="toolbar no-print">
         <button class="btn-main" type="button" onclick="window.print()">IN / TẢI PDF</button>

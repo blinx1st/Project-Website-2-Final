@@ -1,6 +1,8 @@
 <?php
-// Cấu hình CRUD: mỗi resource mô tả bảng, khóa chính, field form và cột hiển thị trên danh sách.
+// Cấu hình CRUD dùng chung cho CrudSupport và các view generic.
+// Mỗi resource mô tả bảng, khóa chính, field của form, quan hệ select và cột cần hiển thị.
 return [
+            // Nhóm tài khoản và tổ chức: Thành viên, CLB và bảng liên kết thành viên CLB.
             'ThanhVien' => [
                 'table' => 'ThanhVien',
                 'pk' => ['MaThanhVien'],
@@ -40,6 +42,7 @@ return [
                 ],
                 'list' => ['TenCLB' => 'CLB', 'HoTen' => 'Thành viên', 'Email' => 'Email', 'VaiTroCLB' => 'Vai trò CLB', 'NgayThamGia' => 'Ngày tham gia'],
             ],
+            // Sự kiện lưu cả thời gian hoạt động lẫn khoảng thời gian cho phép QR check-in.
             'SuKien' => [
                 'table' => 'SuKien',
                 'pk' => ['MaSuKien'],
@@ -61,6 +64,7 @@ return [
                 ],
                 'list' => ['MaSuKien' => 'Mã sự kiện', 'TenSuKien' => 'Tên sự kiện', 'TenCLB' => 'CLB', 'TenLoaiSuKien' => 'Loại', 'HocKy' => 'Học kỳ', 'NamHoc' => 'Năm học', 'SucChua' => 'Sức chứa', 'SoDangKy' => 'Đã đăng ký', 'SoCheckin' => 'Đã check-in', 'SoChoConLai' => 'Còn chỗ', 'NgayBatDau' => 'Bắt đầu', 'NgayKetThuc' => 'Kết thúc', 'CheckinMoLuc' => 'QR mở', 'CheckinDongLuc' => 'QR đóng'],
             ],
+            // Nhóm học tập và thành viên nhóm dùng khóa chính đơn/kép tương ứng với schema database.
             'NhomHocTap' => [
                 'table' => 'NhomHocTap',
                 'pk' => ['MaNhom'],
@@ -85,6 +89,7 @@ return [
                 ],
                 'list' => ['TenNhom' => 'Nhóm học tập', 'HoTen' => 'Thành viên', 'Email' => 'Email', 'NgayThamGia' => 'Ngày tham gia'],
             ],
+            // Nội dung và quá trình tham gia: bài đăng, đăng ký sự kiện và log check-in.
             'BaiDang' => [
                 'table' => 'BaiDang',
                 'pk' => ['MaBaiDang'],
@@ -129,6 +134,7 @@ return [
                 ],
                 'list' => ['MaCheckin' => 'Mã', 'TenSuKien' => 'Sự kiện', 'TenCLB' => 'CLB', 'HoTen' => 'Sinh viên', 'ThoiGianCheckin' => 'Thời gian', 'PhuongThuc' => 'Phương thức', 'XacNhanBoiTen' => 'Xác nhận bởi'],
             ],
+            // Các resource điểm rèn luyện, chứng nhận và báo cáo dùng chung form/list generic.
             'QuyTacDiemRenLuyen' => [
                 'table' => 'QuyTacDiemRenLuyen',
                 'pk' => ['MaQuyTac'],

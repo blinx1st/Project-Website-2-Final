@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng chỉ thao tác các CLB mà scope Repository xác nhận có quyền quản lý.
 class CLB_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'CLB_Assitant_64131060';
     private string $listAction = 'CLB_Assitant_64131060';
     private string $pageTitle = 'Câu lạc bộ (Trợ giảng)';

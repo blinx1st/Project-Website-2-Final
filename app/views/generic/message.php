@@ -1,3 +1,4 @@
+<?php // Mẫu thông báo chung nhận nội dung và nút điều hướng từ controller. ?>
 <section class="panel" style="text-align:center;">
     <h1 class="page-title"><?= h($data['title'] ?? 'Thông báo') ?></h1>
     <p style="font-size:20px;"><?= h($data['message'] ?? '') ?></p>

@@ -1,6 +1,8 @@
 <?php
+// Chứa truy vấn cho nội dung cộng đồng: nhóm học tập, thành viên nhóm, điểm danh và bài đăng.
 trait ContentRepositoryTrait
 {
+    // Trợ giảng chỉ nhận các nhóm có cột TroGiang bằng mã thành viên hiện tại.
     public function listStudyGroups(?string $assistantId = null): array
     {
         $sql = $this->studyGroupSelectSql();
@@ -14,6 +16,7 @@ trait ContentRepositoryTrait
 
     public function listStudyGroupsForMember(string $maThanhVien): array
     {
+        // Bảng nối ThanhVienNhom quyết định chính xác thành viên đang thuộc những nhóm nào.
         return $this->fetchAll($this->studyGroupSelectSql() . '
             INNER JOIN ThanhVienNhom ON ThanhVienNhom.MaNhom = NhomHocTap.MaNhom
             WHERE ThanhVienNhom.MaThanhVien = :MaThanhVien
@@ -57,6 +60,7 @@ trait ContentRepositoryTrait
 
     public function listStudyGroupMembers(?string $assistantId = null, ?string $maNhom = null): array
     {
+        // Hai bộ lọc dùng độc lập: giới hạn quyền trợ giảng và lọc theo một nhóm trên giao diện.
         $sql = $this->studyGroupMemberSelectSql();
         $where = [];
         $params = [];
@@ -76,6 +80,7 @@ trait ContentRepositoryTrait
 
     public function findStudyGroupMember(string $maNhom, string $maThanhVien): ?array
     {
+        // ThanhVienNhom dùng khóa chính kép, vì vậy phải truyền đồng thời mã nhóm và mã thành viên.
         return $this->fetchOne($this->studyGroupMemberSelectSql() . '
             WHERE ThanhVienNhom.MaNhom = :MaNhom AND ThanhVienNhom.MaThanhVien = :MaThanhVien
             LIMIT 1', ['MaNhom' => $maNhom, 'MaThanhVien' => $maThanhVien]);
@@ -85,6 +90,7 @@ trait ContentRepositoryTrait
     {
         $maNhom = (string)($data['MaNhom'] ?? '');
         $maThanhVien = (string)($data['MaThanhVien'] ?? '');
+        // Kiểm tra trước để trả thông báo nghiệp vụ dễ hiểu thay vì lỗi khóa chính từ MySQL.
         if ($this->isStudyGroupMember($maNhom, $maThanhVien)) {
             throw new InvalidArgumentException('Thành viên đã thuộc nhóm học tập này.');
         }
@@ -114,6 +120,7 @@ trait ContentRepositoryTrait
 
     public function membersForStudyGroup(string $maNhom): array
     {
+        // Dạng value/label là hợp đồng dữ liệu dùng chung cho thẻ select và API phụ thuộc nhóm.
         return $this->fetchAll("SELECT ThanhVien.MaThanhVien AS value,
                 CONCAT(ThanhVien.HoTen, ' - ', ThanhVien.MaThanhVien) AS label
             FROM ThanhVienNhom
@@ -134,6 +141,7 @@ trait ContentRepositoryTrait
 
     public function listAttendance(?string $maThanhVien = null, ?string $assistantId = null): array
     {
+        // Thành viên lọc theo chính mình; trợ giảng lọc theo các nhóm mình phụ trách.
         $sql = $this->attendanceSelectSql();
         $where = [];
         $params = [];
@@ -168,6 +176,7 @@ trait ContentRepositoryTrait
 
     public function createAttendance(array $data): void
     {
+        // Ràng buộc nghiệp vụ đặt ở Repository để mọi controller đều tuân theo cùng quy tắc.
         $this->validateAttendanceAssignment($data);
         $stmt = $this->db->prepare('INSERT INTO DiemDanh (MaNhom, MaThanhVien, NgayDiemDanh, TrangThai, GhiChu) VALUES (:MaNhom, :MaThanhVien, :NgayDiemDanh, :TrangThai, :GhiChu)');
         $stmt->execute([
@@ -204,12 +213,14 @@ trait ContentRepositoryTrait
         $maNhom = (string)($data['MaNhom'] ?? '');
         $maThanhVien = (string)($data['MaThanhVien'] ?? '');
         $ngayDiemDanh = (string)($data['NgayDiemDanh'] ?? '');
+        // Chỉ được điểm danh người thật sự có bản ghi trong ThanhVienNhom.
         if (!$this->isStudyGroupMember($maNhom, $maThanhVien)) {
             throw new InvalidArgumentException('Thành viên không thuộc nhóm học tập đã chọn.');
         }
         $sql = 'SELECT 1 FROM DiemDanh WHERE MaNhom = :MaNhom AND MaThanhVien = :MaThanhVien AND NgayDiemDanh = :NgayDiemDanh';
         $params = ['MaNhom' => $maNhom, 'MaThanhVien' => $maThanhVien, 'NgayDiemDanh' => $ngayDiemDanh];
         if ($excludeId !== null && $excludeId !== '') {
+            // Khi sửa, bỏ qua chính bản ghi hiện tại để không bị nhận nhầm là dữ liệu trùng.
             $sql .= ' AND MaDiemDanh <> :ExcludeId';
             $params['ExcludeId'] = $excludeId;
         }
@@ -220,6 +231,7 @@ trait ContentRepositoryTrait
 
     public function listPosts(): array
     {
+        // Bài mới nhất được đưa lên trước cho trang tin chung của các vai trò.
         return $this->fetchAll($this->postSelectSql() . ' ORDER BY BaiDang.NgayTao DESC, BaiDang.MaBaiDang DESC');
     }
 

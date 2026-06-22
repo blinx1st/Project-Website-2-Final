@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng (TVTG) được tạo và quản lý bài đăng qua các hàm CRUD dùng chung.
 class BaiDang_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'BaiDang_Assitant_64131060';
     private string $listAction = 'BaiDang_Assitant_64131060';
     private string $pageTitle = 'Bài đăng (Trợ giảng)';

@@ -1,6 +1,8 @@
 <?php
+// Thành viên chỉ xem lịch sử điểm danh; mọi URL tạo/sửa/xóa đều bị chặn.
 class DiemDanh_Member_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'DiemDanh_Member_64131060';
     private string $listAction = 'DiemDanh_Member_64131060';
     private string $pageTitle = 'Điểm danh (Thành viên)';
@@ -10,6 +12,7 @@ class DiemDanh_Member_64131060Controller extends Controller
         $this->index();
     }
 
+    // Mã thành viên lấy từ session và canWrite=false làm giao diện chỉ đọc.
     public function index(): void
     {
         $this->requireRoles(['TV']);
@@ -24,6 +27,7 @@ class DiemDanh_Member_64131060Controller extends Controller
         ]);
     }
 
+    // Repository nhận thêm memberId để URL chi tiết của người khác trả về không tìm thấy.
     public function Details(...$params): void
     {
         $this->requireRoles(['TV']);
@@ -45,18 +49,21 @@ class DiemDanh_Member_64131060Controller extends Controller
         ]);
     }
 
+    // Chặn tại server là lớp bảo vệ thật; việc ẩn nút trên giao diện chỉ hỗ trợ trải nghiệm.
     public function Create(): void
     {
         $this->requireRoles(['TV']);
         $this->denyUnauthorized();
     }
 
+    // Sửa trực tiếp bằng URL vẫn bị trả 403.
     public function Edit(...$params): void
     {
         $this->requireRoles(['TV']);
         $this->denyUnauthorized();
     }
 
+    // Thành viên không có quyền xóa lịch sử điểm danh.
     public function Delete(...$params): void
     {
         $this->requireRoles(['TV']);

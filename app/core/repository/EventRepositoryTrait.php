@@ -1,6 +1,8 @@
 <?php
+// Nhóm truy vấn sự kiện được tách thành trait để Repository chính không trở thành một file quá lớn.
 trait EventRepositoryTrait
 {
+    // Nếu có mã trợ giảng, danh sách được giới hạn theo các sự kiện người đó được quyền phụ trách.
     public function listEvents(?string $assistantId = null): array
     {
         $sql = $this->eventSelectSql();
@@ -15,6 +17,7 @@ trait EventRepositoryTrait
 
     public function searchEvents(string $maSuKien, string $tenSuKien, string $maCLB = '', string $maLoaiSuKien = '', string $hocKy = '', string $namHoc = '', ?string $assistantId = null): array
     {
+        // Mỗi điều kiện có nhánh "tham số rỗng" để một câu SQL dùng được cho mọi tổ hợp bộ lọc.
         $where = [
             "(:ma = '' OR SuKien.MaSuKien LIKE :maLike)",
             "(:ten = '' OR SuKien.TenSuKien LIKE :tenLike)",
@@ -38,6 +41,7 @@ trait EventRepositoryTrait
             'namHocValue' => $namHoc,
         ];
         if ($assistantId) {
+            // Scope trợ giảng luôn được ghép thêm, tránh việc tìm kiếm làm lộ sự kiện ngoài quyền quản lý.
             $where[] = $this->assistantEventWhere();
             $params['assistantOwner'] = $assistantId;
             $params['assistantClubMember'] = $assistantId;
@@ -52,6 +56,7 @@ trait EventRepositoryTrait
 
     public function createEvent(array $data): void
     {
+        // Không nhập cửa sổ check-in thì mặc định dùng đúng thời gian bắt đầu/kết thúc sự kiện.
         if (empty($data['CheckinMoLuc']) && !empty($data['NgayBatDau'])) {
             $data['CheckinMoLuc'] = $data['NgayBatDau'];
         }
@@ -78,6 +83,7 @@ trait EventRepositoryTrait
 
     public function updateEvent(string $maSuKien, array $data): void
     {
+        // Quy tắc mặc định check-in khi cập nhật phải giống lúc tạo để dữ liệu nhất quán.
         if (empty($data['CheckinMoLuc']) && !empty($data['NgayBatDau'])) {
             $data['CheckinMoLuc'] = $data['NgayBatDau'];
         }

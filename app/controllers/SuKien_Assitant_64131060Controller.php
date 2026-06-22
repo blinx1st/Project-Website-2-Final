@@ -1,6 +1,8 @@
 <?php
+// Trợ giảng quản lý sự kiện theo scope người tổ chức hoặc CLB được phân công.
 class SuKien_Assitant_64131060Controller extends Controller
 {
+    // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
     private string $controllerName = 'SuKien_Assitant_64131060';
     private string $listAction = 'TimKiemSuKien_Assitant_64131060';
     private string $pageTitle = 'Trang sự kiện (Trợ giảng)';

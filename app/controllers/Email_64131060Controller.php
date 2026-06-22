@@ -1,4 +1,5 @@
 <?php
+// Cung cấp form gửi email theo vai trò và chuyển kết quả gửi sang trang thông báo chung.
 class Email_64131060Controller extends Controller
 {
     public function SendMail_Asstant_64131060(): void { $this->requireRoles(['TVTG']); $this->send('Gửi email (Trợ giảng)', 'MailAlert1_64131060'); }

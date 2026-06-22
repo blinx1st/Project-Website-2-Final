@@ -1,6 +1,8 @@
 <?php
+// Nhóm truy vấn loại sự kiện, CLB và bảng liên kết ThanhVienCLB.
 trait ClubRepositoryTrait
 {
+    // Loại sự kiện là dữ liệu danh mục dùng khi cấu hình sự kiện và quy tắc điểm.
     public function listEventTypes(): array
     {
         return $this->db->query('SELECT LoaiSuKien.* FROM LoaiSuKien ORDER BY LoaiSuKien.MaLoaiSuKien ASC')->fetchAll();
@@ -39,6 +41,7 @@ trait ClubRepositoryTrait
 
     public function listClubs(?string $assistantId = null): array
     {
+        // Chủ nhiệm truyền null để xem tất cả; TVTG truyền mã của mình để áp dụng phạm vi CLB.
         $sql = $this->clubSelectSql();
         $params = [];
         if ($assistantId) {
@@ -86,6 +89,7 @@ trait ClubRepositoryTrait
 
     public function listClubMembers(?string $assistantId = null): array
     {
+        // JOIN trả cả tên CLB, họ tên và email thay vì chỉ hai khóa của bảng liên kết.
         $sql = $this->clubMemberSelectSql();
         $params = [];
         if ($assistantId) {
@@ -117,6 +121,7 @@ trait ClubRepositoryTrait
 
     public function updateClubMember(string $maCLB, string $maThanhVien, array $data): void
     {
+        // MaCLB + MaThanhVien là khóa kép nên Edit chỉ đổi vai trò và ngày tham gia.
         $stmt = $this->db->prepare('UPDATE ThanhVienCLB SET VaiTroCLB = :VaiTroCLB, NgayThamGia = :NgayThamGia WHERE MaCLB = :MaCLB AND MaThanhVien = :MaThanhVien');
         $stmt->execute([
             'VaiTroCLB' => $data['VaiTroCLB'] ?? '',
