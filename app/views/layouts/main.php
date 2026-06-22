@@ -250,7 +250,6 @@
             padding-left: .75rem;
             text-align: left;
             box-sizing: border-box;
-            transform: translateX(160px);
         }
 
         .form-field textarea {
@@ -442,6 +441,7 @@
                         <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_AdminPage_64131060') ?>">GIỚI THIỆU</a>
                         <a href="<?= url_for('BaiDang_Admin_64131060', 'BaiDang_Admin_64131060') ?>">TIN TỨC</a>
                         <a href="<?= url_for('CLB_Admin_64131060', 'CLB_Admin_64131060') ?>">CLB</a>
+                        <a href="<?= url_for('NhomHocTap_Admin_64131060', 'NhomHocTap_Admin_64131060') ?>">NHÓM HỌC TẬP</a>
                         <a href="<?= url_for('SuKien_Admin_64131060', 'TimKiemSuKien_Admin_64131060') ?>">SỰ KIỆN</a>
                         <a href="<?= url_for('CheckinSuKien_Admin_64131060', 'CheckinSuKien_Admin_64131060') ?>">CHECK-IN</a>
                         <a href="<?= url_for('DiemRenLuyen_Admin_64131060', 'DiemRenLuyen_Admin_64131060') ?>">ĐIỂM RÈN LUYỆN</a>
@@ -455,6 +455,7 @@
                         <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_AssitantPage_64131060') ?>">GIỚI THIỆU</a>
                         <a href="<?= url_for('BaiDang_Assitant_64131060', 'BaiDang_Assitant_64131060') ?>">TIN TỨC</a>
                         <a href="<?= url_for('CLB_Assitant_64131060', 'CLB_Assitant_64131060') ?>">CLB</a>
+                        <a href="<?= url_for('NhomHocTap_Assitant_64131060', 'NhomHocTap_Assitant_64131060') ?>">NHÓM HỌC TẬP</a>
                         <a href="<?= url_for('SuKien_Assitant_64131060', 'TimKiemSuKien_Assitant_64131060') ?>">SỰ KIỆN</a>
                         <a href="<?= url_for('CheckinSuKien_Assitant_64131060', 'CheckinSuKien_Assitant_64131060') ?>">CHECK-IN</a>
                         <a href="<?= url_for('DiemRenLuyen_Assitant_64131060', 'DiemRenLuyen_Assitant_64131060') ?>">ĐIỂM RÈN LUYỆN</a>
