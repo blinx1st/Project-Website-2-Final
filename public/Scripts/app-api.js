@@ -93,6 +93,52 @@
         }
     });
 
+    document.querySelectorAll('form[data-dependent-group-members]').forEach(function (form) {
+        const groupSelect = form.querySelector('[name="MaNhom"]');
+        const memberSelect = form.querySelector('[name="MaThanhVien"]');
+        if (!groupSelect || !memberSelect) {
+            return;
+        }
+
+        async function loadMembers(preserveValue) {
+            const groupId = groupSelect.value || '';
+            memberSelect.disabled = true;
+            memberSelect.innerHTML = '<option value="">-- Chọn --</option>';
+            if (!groupId) {
+                memberSelect.disabled = false;
+                return;
+            }
+            try {
+                const url = baseUrl + '/Api_64131060/DanhSachThanhVienNhom?MaNhom=' + encodeURIComponent(groupId);
+                const payload = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(readJson);
+                (payload.data || []).forEach(function (item) {
+                    const option = document.createElement('option');
+                    option.value = item.value;
+                    option.textContent = item.label;
+                    option.selected = String(item.value) === String(preserveValue || '');
+                    memberSelect.appendChild(option);
+                });
+            } catch (error) {
+                showMessage(error.message, false);
+            } finally {
+                memberSelect.disabled = false;
+            }
+        }
+
+        const initialMember = memberSelect.value || '';
+        groupSelect.addEventListener('change', function () {
+            loadMembers('');
+        });
+        if (groupSelect.value) {
+            loadMembers(initialMember);
+        }
+    });
+
     document.addEventListener('submit', function (event) {
         const form = event.target.closest('form[data-validate-resource]');
         if (!form) {

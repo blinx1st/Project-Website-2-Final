@@ -41,7 +41,7 @@ class TrangChu_64131060Controller extends Controller
                 ['title' => 'Sự kiện', 'desc' => 'Tạo, tìm kiếm và theo dõi sự kiện.', 'url' => $primaryUrl],
                 ['title' => 'Điểm rèn luyện', 'desc' => 'Theo dõi điểm hoạt động ngoại khóa theo học kỳ.', 'url' => url_for(current_role() === 'TVCN' ? 'DiemRenLuyen_Admin_64131060' : (current_role() === 'TVTG' ? 'DiemRenLuyen_Assitant_64131060' : 'DiemRenLuyen_Member_64131060'), current_role() === 'TVCN' ? 'DiemRenLuyen_Admin_64131060' : (current_role() === 'TVTG' ? 'DiemRenLuyen_Assitant_64131060' : 'DiemRenLuyen_Member_64131060'))],
                 ['title' => 'Chứng nhận', 'desc' => 'Xem chứng nhận tham gia sự kiện đã được cấp.', 'url' => url_for(current_role() === 'TVCN' ? 'ChungNhan_Admin_64131060' : (current_role() === 'TVTG' ? 'ChungNhan_Assitant_64131060' : 'ChungNhan_Member_64131060'), current_role() === 'TVCN' ? 'ChungNhan_Admin_64131060' : (current_role() === 'TVTG' ? 'ChungNhan_Assitant_64131060' : 'ChungNhan_Member_64131060'))],
-                ['title' => 'Điểm danh', 'desc' => 'Ghi nhận tham gia nhóm học tập.', 'url' => url_for(current_role() === 'TVCN' ? 'DiemDanh_Admin_64131060' : (current_role() === 'TVTG' ? 'DiemDanh_Assitant_64131060' : 'DiemDanh_Member_64131060'), current_role() ? 'Create' : 'DiemDanh_Member_64131060')],
+                ['title' => 'Điểm danh', 'desc' => 'Ghi nhận tham gia nhóm học tập.', 'url' => url_for(current_role() === 'TVCN' ? 'DiemDanh_Admin_64131060' : (current_role() === 'TVTG' ? 'DiemDanh_Assitant_64131060' : 'DiemDanh_Member_64131060'), current_role() === 'TV' ? 'DiemDanh_Member_64131060' : (current_role() ? 'Create' : 'DiemDanh_Member_64131060'))],
             ],
         ]);
     }

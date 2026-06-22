@@ -20,7 +20,7 @@ class DiemDanh_Member_64131060Controller extends Controller
             'listAction' => $this->listAction,
             'cfg' => $this->cfg(),
             'rows' => $this->repo()->listAttendance($memberId),
-            'canWrite' => true,
+            'canWrite' => false,
         ]);
     }
 
@@ -41,77 +41,31 @@ class DiemDanh_Member_64131060Controller extends Controller
             'cfg' => $this->cfg(),
             'row' => $row,
             'keys' => ['MaDiemDanh' => $row['MaDiemDanh']],
-            'canWrite' => true,
+            'canWrite' => false,
         ]);
     }
 
     public function Create(): void
     {
         $this->requireRoles(['TV']);
-        $cfg = $this->cfg();
-        if ($this->isPost()) {
-            $row = $this->collectData();
-            try {
-                Validator::validateResource($cfg, $row);
-                $this->repo()->createAttendance($row);
-                redirect_to($this->controllerName, 'Alert_Member_64131060');
-            } catch (Throwable $e) {
-                $this->renderForm($row, 'Create', 'Thêm điểm danh', $e->getMessage());
-            }
-            return;
-        }
-        $this->renderForm(['MaThanhVien' => $this->currentMemberId()], 'Create', 'Thêm điểm danh');
+        $this->denyUnauthorized();
     }
 
     public function Edit(...$params): void
     {
         $this->requireRoles(['TV']);
-        $cfg = $this->cfg();
-        $memberId = $this->currentMemberId();
-        $id = $this->idFromRequest($params);
-        $row = $this->repo()->findAttendance($id, $memberId);
-        if (!$row) {
-            $this->notFound();
-            return;
-        }
-        if ($this->isPost()) {
-            $data = $this->collectData();
-            try {
-                Validator::validateResource($cfg, $data);
-                $this->repo()->updateAttendance($id, $data);
-                redirect_to($this->controllerName, $this->listAction);
-            } catch (Throwable $e) {
-                $this->renderForm(array_merge($row, $data), 'Edit', 'Cập nhật điểm danh', $e->getMessage(), ['MaDiemDanh' => $id]);
-            }
-            return;
-        }
-        $this->renderForm($row, 'Edit', 'Cập nhật điểm danh', '', ['MaDiemDanh' => $id]);
+        $this->denyUnauthorized();
     }
 
     public function Delete(...$params): void
     {
         $this->requireRoles(['TV']);
-        $memberId = $this->currentMemberId();
-        $id = $this->idFromRequest($params);
-        $row = $this->repo()->findAttendance($id, $memberId);
-        if (!$row) {
-            $this->notFound();
-            return;
-        }
-        if ($this->isPost()) {
-            try {
-                $this->repo()->deleteAttendance($id);
-                redirect_to($this->controllerName, $this->listAction);
-            } catch (Throwable $e) {
-                $this->renderDelete($row, ['MaDiemDanh' => $id], 'Không thể xóa vì dữ liệu đang được sử dụng ở bảng khác. ' . $e->getMessage());
-            }
-            return;
-        }
-        $this->renderDelete($row, ['MaDiemDanh' => $id]);
+        $this->denyUnauthorized();
     }
 
     public function Alert_Member_64131060(): void
     {
+        $this->requireRoles(['TV']);
         $this->render('generic/message', [
             'title' => 'Điểm danh thành công',
             'message' => 'Thông tin điểm danh của bạn đã được ghi nhận.',

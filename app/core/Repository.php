@@ -80,6 +80,15 @@ class Repository
             LEFT JOIN ThanhVien ON ThanhVien.MaThanhVien = NhomHocTap.TroGiang';
     }
 
+    private function studyGroupMemberSelectSql(): string
+    {
+        return 'SELECT ThanhVienNhom.*, NhomHocTap.TenNhom, NhomHocTap.TroGiang,
+                ThanhVien.HoTen, ThanhVien.Email
+            FROM ThanhVienNhom
+            INNER JOIN NhomHocTap ON NhomHocTap.MaNhom = ThanhVienNhom.MaNhom
+            INNER JOIN ThanhVien ON ThanhVien.MaThanhVien = ThanhVienNhom.MaThanhVien';
+    }
+
     private function attendanceSelectSql(): string
     {
         return 'SELECT DiemDanh.*, NhomHocTap.TenNhom, ThanhVien.HoTen

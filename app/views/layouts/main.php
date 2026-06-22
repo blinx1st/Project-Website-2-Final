@@ -467,12 +467,13 @@
                     <?php elseif (current_role() === 'TV'): ?>
                         <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_MemberPage_64131060') ?>">GIỚI THIỆU</a>
                         <a href="<?= url_for('BaiDang_Member_64131060', 'BaiDang_Member_64131060') ?>">TIN TỨC</a>
+                        <a href="<?= url_for('NhomHocTap_Member_64131060', 'NhomHocTap_Member_64131060') ?>">NHÓM HỌC TẬP</a>
                         <a href="<?= url_for('SuKien_Member_64131060', 'TimKiemSuKien_Member_64131060') ?>">SỰ KIỆN</a>
                         <a href="<?= url_for('ThanhVienSuKien_Member_64131060', 'ThanhVienSuKien_Member_64131060') ?>">LỊCH SỬ</a>
                         <a href="<?= url_for('CheckinSuKien_Member_64131060', 'CheckinSuKien_Member_64131060') ?>">CHECK-IN</a>
                         <a href="<?= url_for('DiemRenLuyen_Member_64131060', 'DiemRenLuyen_Member_64131060') ?>">ĐIỂM RÈN LUYỆN</a>
                         <a href="<?= url_for('ChungNhan_Member_64131060', 'ChungNhan_Member_64131060') ?>">CHỨNG NHẬN</a>
-                        <a href="<?= url_for('DiemDanh_Member_64131060', 'Create') ?>">ĐIỂM DANH</a>
+                        <a href="<?= url_for('DiemDanh_Member_64131060', 'DiemDanh_Member_64131060') ?>">ĐIỂM DANH</a>
                         <a href="<?= url_for('Email_64131060', 'SendMail_Member_64131060') ?>">MAIL</a>
                         <a href="<?= url_for('ThanhVien_Member_64131060', 'Member_Page_64131060') ?>">TRANG CÁ NHÂN</a>
                     <?php else: ?>

@@ -74,6 +74,17 @@ return [
                 ],
                 'list' => ['MaNhom' => 'Mã nhóm', 'TenNhom' => 'Tên nhóm', 'TroGiangTen' => 'Trợ giảng', 'NgayTao' => 'Ngày tạo', 'MoTa' => 'Mô tả'],
             ],
+            'ThanhVienNhom' => [
+                'table' => 'ThanhVienNhom',
+                'pk' => ['MaNhom', 'MaThanhVien'],
+                'title' => 'Thành viên nhóm học tập',
+                'fields' => [
+                    'MaNhom' => ['label' => 'Nhóm học tập', 'type' => 'select', 'relation' => ['table' => 'NhomHocTap', 'value' => 'MaNhom', 'label' => 'TenNhom'], 'required' => true],
+                    'MaThanhVien' => ['label' => 'Thành viên', 'type' => 'select', 'relation' => ['table' => 'ThanhVien', 'value' => 'MaThanhVien', 'label' => 'HoTen'], 'required' => true],
+                    'NgayThamGia' => ['label' => 'Ngày tham gia', 'type' => 'datetime'],
+                ],
+                'list' => ['TenNhom' => 'Nhóm học tập', 'HoTen' => 'Thành viên', 'Email' => 'Email', 'NgayThamGia' => 'Ngày tham gia'],
+            ],
             'BaiDang' => [
                 'table' => 'BaiDang',
                 'pk' => ['MaBaiDang'],

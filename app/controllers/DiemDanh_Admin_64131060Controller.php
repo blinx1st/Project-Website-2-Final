@@ -125,11 +125,11 @@ class DiemDanh_Admin_64131060Controller extends Controller
         ];
     }
 
-    private function relations(): array
+    private function relations(string $maNhom = ''): array
     {
         return [
             'MaNhom' => $this->repo()->options(['table' => 'NhomHocTap', 'value' => 'MaNhom', 'label' => 'TenNhom']),
-            'MaThanhVien' => $this->repo()->options(['table' => 'ThanhVien', 'value' => 'MaThanhVien', 'label' => 'HoTen']),
+            'MaThanhVien' => $maNhom !== '' ? $this->repo()->membersForStudyGroup($maNhom) : [],
         ];
     }
 
@@ -159,10 +159,11 @@ class DiemDanh_Admin_64131060Controller extends Controller
             'title' => $title,
             'error' => $error,
             'keys' => $keys,
-            'relations' => $this->relations(),
+            'relations' => $this->relations((string)($row['MaNhom'] ?? '')),
             'controller' => $this->controllerName,
             'listAction' => $this->listAction,
             'canWrite' => true,
+            'dependentGroupMembers' => true,
         ]);
     }
 

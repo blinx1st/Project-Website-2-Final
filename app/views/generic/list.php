@@ -36,6 +36,18 @@
         </form>
     <?php endif; ?>
 
+    <?php if (!empty($data['groupFilter'])): ?>
+        <form class="search-form" method="get" action="<?= url_for($data['controller'], $data['listAction']) ?>">
+            <select class="form-control" name="MaNhom">
+                <option value="">Tất cả nhóm học tập</option>
+                <?php foreach (($data['groupOptions'] ?? []) as $option): ?>
+                    <option value="<?= h($option['value']) ?>" <?= (string)($data['selectedGroup'] ?? '') === (string)$option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button class="btn-main" type="submit">LỌC THEO NHÓM</button>
+        </form>
+    <?php endif; ?>
+
     <?php if (($data['controller'] ?? '') === 'DiemRenLuyen_Admin_64131060'): ?>
         <form class="search-form" method="get" action="<?= url_for('DiemRenLuyen_Admin_64131060', 'ExportCsv') ?>">
             <select class="form-control" name="HocKy" required>
@@ -79,6 +91,15 @@
             <a class="btn-back" href="<?= url_for('CheckinSuKien_Assitant_64131060', 'CheckinSuKien_Assitant_64131060') ?>">LOG CHECK-IN</a>
         <?php elseif (!$isPostList && str_contains($data['controller'], 'ThanhVienSuKien_Member')): ?>
             <a class="btn-back" href="<?= url_for('CheckinSuKien_Member_64131060', 'CheckinSuKien_Member_64131060') ?>">LỊCH SỬ CHECK-IN</a>
+        <?php endif; ?>
+        <?php if (!$isPostList && ($data['controller'] ?? '') === 'NhomHocTap_Admin_64131060'): ?>
+            <a class="btn-back" href="<?= url_for('ThanhVienNhom_Admin_64131060', 'ThanhVienNhom_Admin_64131060') ?>">THÀNH VIÊN NHÓM</a>
+        <?php elseif (!$isPostList && ($data['controller'] ?? '') === 'NhomHocTap_Assitant_64131060'): ?>
+            <a class="btn-back" href="<?= url_for('ThanhVienNhom_Assitant_64131060', 'ThanhVienNhom_Assitant_64131060') ?>">THÀNH VIÊN NHÓM</a>
+        <?php elseif (!$isPostList && ($data['cfg']['table'] ?? '') === 'ThanhVienNhom' && current_role() === 'TVCN'): ?>
+            <a class="btn-back" href="<?= url_for('NhomHocTap_Admin_64131060', 'NhomHocTap_Admin_64131060') ?>">NHÓM HỌC TẬP</a>
+        <?php elseif (!$isPostList && ($data['cfg']['table'] ?? '') === 'ThanhVienNhom' && current_role() === 'TVTG'): ?>
+            <a class="btn-back" href="<?= url_for('NhomHocTap_Assitant_64131060', 'NhomHocTap_Assitant_64131060') ?>">NHÓM HỌC TẬP</a>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -151,6 +172,11 @@
                         <?php if (!empty($data['canWrite'])): ?>
                             <a class="btn btn-sm btn-warning" href="<?= url_for($data['controller'], 'Edit', $params) ?>">Sửa</a>
                             <a class="btn btn-sm btn-danger" href="<?= url_for($data['controller'], 'Delete', $params) ?>">Xóa</a>
+                        <?php endif; ?>
+                        <?php if (($data['cfg']['table'] ?? '') === 'NhomHocTap' && current_role() === 'TVCN'): ?>
+                            <a class="btn btn-sm btn-primary" href="<?= url_for('ThanhVienNhom_Admin_64131060', 'ThanhVienNhom_Admin_64131060', ['MaNhom' => $row['MaNhom']]) ?>">Thành viên</a>
+                        <?php elseif (($data['cfg']['table'] ?? '') === 'NhomHocTap' && current_role() === 'TVTG'): ?>
+                            <a class="btn btn-sm btn-primary" href="<?= url_for('ThanhVienNhom_Assitant_64131060', 'ThanhVienNhom_Assitant_64131060', ['MaNhom' => $row['MaNhom']]) ?>">Thành viên</a>
                         <?php endif; ?>
                         <?php if (!empty($data['cfg']['ajaxConfirm']) && current_role() && in_array(current_role(), ['TVCN', 'TVTG'], true) && ($row['TrangThaiThamGia'] ?? '') !== 'Đã tham gia'): ?>
                             <button class="btn btn-sm btn-success js-confirm-attendance" type="button" data-event="<?= h($row['MaSuKien']) ?>" data-member="<?= h($row['MaThanhVien']) ?>">Xác nhận</button>

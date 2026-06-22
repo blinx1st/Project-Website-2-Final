@@ -18,7 +18,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
             'controller' => $this->controllerName,
             'listAction' => $this->listAction,
             'cfg' => $this->cfg(),
-            'rows' => $this->repo()->listAttendance(),
+            'rows' => $this->repo()->listAttendance(null, $this->currentMemberId()),
             'canWrite' => true,
         ]);
     }
@@ -32,6 +32,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
             $this->notFound();
             return;
         }
+        $this->guardStudyGroupScope((string)$row['MaNhom']);
         $this->render('generic/details', [
             'title' => 'Thông tin chi tiết điểm danh',
             'controller' => $this->controllerName,
@@ -51,6 +52,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
             $row = $this->collectData();
             try {
                 Validator::validateResource($cfg, $row);
+                $this->guardStudyGroupScope((string)$row['MaNhom']);
                 $this->repo()->createAttendance($row);
                 redirect_to($this->controllerName, 'Create');
             } catch (Throwable $e) {
@@ -71,10 +73,12 @@ class DiemDanh_Assitant_64131060Controller extends Controller
             $this->notFound();
             return;
         }
+        $this->guardStudyGroupScope((string)$row['MaNhom']);
         if ($this->isPost()) {
             $data = $this->collectData();
             try {
                 Validator::validateResource($cfg, $data);
+                $this->guardStudyGroupScope((string)$data['MaNhom']);
                 $this->repo()->updateAttendance($id, $data);
                 redirect_to($this->controllerName, $this->listAction);
             } catch (Throwable $e) {
@@ -94,6 +98,7 @@ class DiemDanh_Assitant_64131060Controller extends Controller
             $this->notFound();
             return;
         }
+        $this->guardStudyGroupScope((string)$row['MaNhom']);
         if ($this->isPost()) {
             try {
                 $this->repo()->deleteAttendance($id);
@@ -125,11 +130,12 @@ class DiemDanh_Assitant_64131060Controller extends Controller
         ];
     }
 
-    private function relations(): array
+    private function relations(string $maNhom = ''): array
     {
+        $groups = array_map(fn($group) => ['value' => $group['MaNhom'], 'label' => $group['TenNhom']], $this->repo()->listStudyGroups($this->currentMemberId()));
         return [
-            'MaNhom' => $this->repo()->options(['table' => 'NhomHocTap', 'value' => 'MaNhom', 'label' => 'TenNhom']),
-            'MaThanhVien' => $this->repo()->options(['table' => 'ThanhVien', 'value' => 'MaThanhVien', 'label' => 'HoTen']),
+            'MaNhom' => $groups,
+            'MaThanhVien' => $maNhom !== '' ? $this->repo()->membersForStudyGroup($maNhom) : [],
         ];
     }
 
@@ -159,11 +165,19 @@ class DiemDanh_Assitant_64131060Controller extends Controller
             'title' => $title,
             'error' => $error,
             'keys' => $keys,
-            'relations' => $this->relations(),
+            'relations' => $this->relations((string)($row['MaNhom'] ?? '')),
             'controller' => $this->controllerName,
             'listAction' => $this->listAction,
             'canWrite' => true,
+            'dependentGroupMembers' => true,
         ]);
+    }
+
+    private function guardStudyGroupScope(string $maNhom): void
+    {
+        if (!$maNhom || !$this->repo()->canManageStudyGroup($maNhom, $this->currentMemberId())) {
+            $this->denyUnauthorized();
+        }
     }
 
     private function renderDelete(array $row, array $keys, string $error = ''): void

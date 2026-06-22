@@ -19,4 +19,11 @@ trait ScopeRepositoryTrait
         $stmt->execute(['maSuKien' => $maSuKien, 'owner' => $maThanhVien, 'member' => $maThanhVien]);
         return (bool)$stmt->fetchColumn();
     }
+
+    public function canManageStudyGroup(string $maNhom, string $maThanhVien): bool
+    {
+        $stmt = $this->db->prepare('SELECT 1 FROM NhomHocTap WHERE MaNhom = :maNhom AND TroGiang = :maThanhVien LIMIT 1');
+        $stmt->execute(['maNhom' => $maNhom, 'maThanhVien' => $maThanhVien]);
+        return (bool)$stmt->fetchColumn();
+    }
 }

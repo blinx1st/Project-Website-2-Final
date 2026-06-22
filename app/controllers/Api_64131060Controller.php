@@ -137,6 +137,23 @@ class Api_64131060Controller extends Controller
         }
     }
 
+    public function DanhSachThanhVienNhom(): void
+    {
+        try {
+            $this->requireRoles(['TVCN', 'TVTG']);
+            $maNhom = trim($_GET['MaNhom'] ?? '');
+            if ($maNhom === '') {
+                throw new InvalidArgumentException('Thiếu mã nhóm học tập.');
+            }
+            if (current_role() === 'TVTG' && !$this->repo()->canManageStudyGroup($maNhom, $this->memberId())) {
+                $this->denyUnauthorized();
+            }
+            $this->json(['success' => true, 'data' => $this->repo()->membersForStudyGroup($maNhom)]);
+        } catch (Throwable $e) {
+            $this->json(['success' => false, 'message' => $e->getMessage()], 400);
+        }
+    }
+
     private function memberId(): string
     {
         if (current_member_id()) {

@@ -10,7 +10,7 @@
         <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php endif; ?>
     <?php if (!empty($data['error'])): ?><div class="alert alert-danger"><?= h($data['error']) ?></div><?php endif; ?>
-    <form method="post" enctype="multipart/form-data" action="" data-validate-resource="1">
+    <form method="post" enctype="multipart/form-data" action="" data-validate-resource="1" <?= !empty($data['dependentGroupMembers']) ? 'data-dependent-group-members="1"' : '' ?>>
         <?php foreach (($data['keys'] ?? []) as $pk => $value): ?><input type="hidden" name="<?= h($pk) ?>" value="<?= h($value) ?>"><?php endforeach; ?>
         <?php if ($isRegistrationForm): ?>
             <div class="registration-table-wrap">
