@@ -5,12 +5,22 @@ class NhomHocTap_Admin_64131060Controller extends Controller
     private string $listAction = 'NhomHocTap_Admin_64131060';
     private string $pageTitle = 'Nhóm học tập';
 
-    public function NhomHocTap_Admin_64131060(): void { $this->index(); }
+    public function NhomHocTap_Admin_64131060(): void
+    {
+        $this->index();
+    }
 
     public function index(): void
     {
         $this->requireRoles(['TVCN']);
-        $this->renderCrudList($this->pageTitle, $this->controllerName, $this->listAction, $this->cfg(), $this->repo()->listStudyGroups(), true);
+        $this->renderCrudList(
+            $this->pageTitle,
+            $this->controllerName,
+            $this->listAction,
+            $this->cfg(),
+            $this->repo()->listStudyGroups(),
+            true
+        );
     }
 
     public function Details(...$params): void
@@ -37,6 +47,12 @@ class NhomHocTap_Admin_64131060Controller extends Controller
         $this->crudDeleteAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findStudyGroup((string)$keys['MaNhom']), fn($keys) => $this->repo()->deleteStudyGroup((string)$keys['MaNhom']));
     }
 
-    private function cfg(): array { return $this->resourceCfg('NhomHocTap'); }
-    private function keys(array $params): array { return $this->keysFromRequest($this->cfg(), $params); }
+    private function cfg(): array
+    {
+        return $this->resourceCfg('NhomHocTap');
+    }
+    private function keys(array $params): array
+    {
+        return $this->keysFromRequest($this->cfg(), $params);
+    }
 }
