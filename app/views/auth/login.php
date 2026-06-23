@@ -25,7 +25,7 @@
             <?php // Link khôi phục mật khẩu mở form nhập email, không cần đăng nhập trước. 
             ?>
             <p class="login-subtitle" style="text-align:right;margin-top:-8px;">
-                <a href="<?= url_for('Login_64131060', 'ForgotPassword_64131060') ?>">Quên mật khẩu?</a>
+                <a style="color:#0b3d91;font-weight:600;" href="<?= url_for('Login_64131060', 'ForgotPassword_64131060') ?>">Quên mật khẩu?</a>
             </p>
             <div class="login-actions">
                 <button class="btn-main" type="submit">ĐĂNG NHẬP</button>
