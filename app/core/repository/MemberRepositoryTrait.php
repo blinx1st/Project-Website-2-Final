@@ -103,4 +103,11 @@ trait MemberRepositoryTrait
         $stmt = $this->db->prepare('UPDATE ThanhVien SET MatKhau = :matKhau WHERE MaThanhVien = :maThanhVien');
         $stmt->execute(['matKhau' => $newPassword, 'maThanhVien' => $maThanhVien]);
     }
+
+    public function resetPassword(string $maThanhVien, string $newPassword): void
+    {
+        // Luồng quên mật khẩu đã xác thực bằng token email nên không yêu cầu mật khẩu cũ.
+        $stmt = $this->db->prepare('UPDATE ThanhVien SET MatKhau = :matKhau WHERE MaThanhVien = :maThanhVien');
+        $stmt->execute(['matKhau' => $newPassword, 'maThanhVien' => $maThanhVien]);
+    }
 }

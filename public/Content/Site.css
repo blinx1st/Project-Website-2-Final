@@ -24,7 +24,10 @@ select,
 textarea {
   max-width: 280px;
 }
-
+.forgot-password-a {
+  color: #000000;
+  text-decoration: none;
+}
 /* Trang giới thiệu: hero, số liệu, lưới nội dung và bố cục chia đôi. */
 .about-page {
   display: grid;

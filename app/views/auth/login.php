@@ -1,4 +1,5 @@
-<?php // Form đăng nhập gửi email/mật khẩu về LoginController; view không tự xác thực tài khoản. ?>
+<?php // Form đăng nhập gửi email/mật khẩu về LoginController; view không tự xác thực tài khoản. 
+?>
 <section class="login-panel">
     <div class="login-brand">
         <img src="<?= asset_url('Image/LogoVNU.jpg') ?>" alt="Câu lạc bộ tin học VNUIS">
@@ -21,6 +22,11 @@
                 <label class="form-label" for="matKhau">Mật khẩu</label>
                 <input class="form-control" id="matKhau" type="password" name="matKhau" placeholder="Nhập mật khẩu" required>
             </div>
+            <?php // Link khôi phục mật khẩu mở form nhập email, không cần đăng nhập trước. 
+            ?>
+            <p class="login-subtitle" style="text-align:right;margin-top:-8px;">
+                <a href="<?= url_for('Login_64131060', 'ForgotPassword_64131060') ?>">Quên mật khẩu?</a>
+            </p>
             <div class="login-actions">
                 <button class="btn-main" type="submit">ĐĂNG NHẬP</button>
                 <a class="btn-back" href="<?= url_for('ThanhVien_Member_64131060', 'Create') ?>">ĐĂNG KÝ TÀI KHOẢN</a>
