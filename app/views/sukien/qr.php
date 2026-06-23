@@ -16,7 +16,6 @@ $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . rawu
             <p>Sinh viên đã đăng ký dùng camera điện thoại để quét mã QR này, đăng nhập và check-in sự kiện.</p>
             <div class="toolbar">
                 <a class="btn-back" href="<?= h($data['backUrl']) ?>">QUAY VỀ</a>
-                <a class="btn-main" href="<?= h($absoluteScanUrl) ?>" target="_blank" rel="noopener">MỞ LINK CHECK-IN</a>
             </div>
         </div>
         <div class="qr-box">
