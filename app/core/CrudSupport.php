@@ -86,6 +86,11 @@ trait CrudSupport
                 continue;
             }
             $value = $_POST[$field] ?? '';
+            if ($type === 'password' && trim((string)$value) === '' && array_key_exists($field, $existing)) {
+                // Khi Edit tài khoản, để trống mật khẩu nghĩa là giữ hash cũ, tránh đổ hash ra form.
+                $data[$field] = $existing[$field];
+                continue;
+            }
             if (($meta['nullable'] ?? false) && trim((string)$value) === '') {
                 $data[$field] = null;
                 continue;

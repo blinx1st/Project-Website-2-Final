@@ -12,16 +12,35 @@ class Email_64131060Controller extends Controller
     private function send(string $title, string $successAction): void
     {
         $mailFrom = $this->mailFrom();
+        $recipients = $this->repo()->emailRecipients();
+        $allowedEmails = array_map('strval', array_column($recipients, 'Email'));
         if ($this->isPost()) {
+            $selectedTo = trim($_POST['To'] ?? '');
+            $subject = trim($_POST['Subject'] ?? '');
+            $body = trim($_POST['Body'] ?? '');
             try {
-                (new Mailer())->send('', '', $_POST['To'] ?? '', $_POST['Subject'] ?? '', $_POST['Body'] ?? '');
+                if ($selectedTo === '') {
+                    throw new InvalidArgumentException('Vui lòng chọn email nhận.');
+                }
+                if (!in_array($selectedTo, $allowedEmails, true)) {
+                    throw new InvalidArgumentException('Email nhận không nằm trong danh sách thành viên câu lạc bộ.');
+                }
+                (new Mailer())->send('', '', $selectedTo, $subject, $body);
                 redirect_to('Email_64131060', $successAction);
             } catch (Throwable $e) {
-                $this->render('email/send', ['title' => $title, 'error' => $e->getMessage(), 'mailFrom' => $mailFrom]);
+                $this->render('email/send', [
+                    'title' => $title,
+                    'error' => $e->getMessage(),
+                    'mailFrom' => $mailFrom,
+                    'recipients' => $recipients,
+                    'selectedTo' => $selectedTo,
+                    'subject' => $subject,
+                    'body' => $body,
+                ]);
             }
             return;
         }
-        $this->render('email/send', ['title' => $title, 'mailFrom' => $mailFrom]);
+        $this->render('email/send', ['title' => $title, 'mailFrom' => $mailFrom, 'recipients' => $recipients]);
     }
 
     private function mailFrom(): string

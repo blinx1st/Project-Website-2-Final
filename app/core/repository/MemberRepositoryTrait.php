@@ -55,6 +55,26 @@ trait MemberRepositoryTrait
             LIMIT 1', ['email' => $email]);
     }
 
+    public function emailRecipients(): array
+    {
+        // Danh sách gửi mail ưu tiên Chủ nhiệm (TVCN), sau đó Trợ giảng (TVTG), cuối cùng Thành viên (TV).
+        return $this->fetchAll("SELECT ThanhVien.MaThanhVien,
+                ThanhVien.HoTen,
+                ThanhVien.Email,
+                ThanhVien.MaVaiTro,
+                VaiTro.TenVaiTro
+            FROM ThanhVien
+            LEFT JOIN VaiTro ON VaiTro.MaVaiTro = ThanhVien.MaVaiTro
+            WHERE ThanhVien.Email <> ''
+            ORDER BY CASE ThanhVien.MaVaiTro
+                    WHEN 'TVCN' THEN 1
+                    WHEN 'TVTG' THEN 2
+                    ELSE 3
+                END,
+                ThanhVien.HoTen ASC,
+                ThanhVien.Email ASC");
+    }
+
     public function createMember(array $data): void
     {
         $stmt = $this->db->prepare('INSERT INTO ThanhVien (MaThanhVien, HoTen, Email, MatKhau, MaVaiTro, NgayTao) VALUES (:MaThanhVien, :HoTen, :Email, :MatKhau, :MaVaiTro, :NgayTao)');
@@ -62,7 +82,8 @@ trait MemberRepositoryTrait
             'MaThanhVien' => $data['MaThanhVien'] ?? '',
             'HoTen' => $data['HoTen'] ?? '',
             'Email' => $data['Email'] ?? '',
-            'MatKhau' => $data['MatKhau'] ?? '',
+            // Mọi tài khoản tạo mới đều lưu hash, không lưu mật khẩu gốc.
+            'MatKhau' => $this->hashPassword((string)($data['MatKhau'] ?? '')),
             'MaVaiTro' => $data['MaVaiTro'] ?? 'TV',
             'NgayTao' => $data['NgayTao'] ?? date('Y-m-d H:i:s'),
         ]);
@@ -70,11 +91,18 @@ trait MemberRepositoryTrait
 
     public function updateMember(string $maThanhVien, array $data): void
     {
+        $existing = $this->findMember($maThanhVien);
+        $submittedPassword = trim((string)($data['MatKhau'] ?? ''));
+        $passwordToStore = (string)($existing['MatKhau'] ?? '');
+        if ($submittedPassword !== '' && $submittedPassword !== $passwordToStore) {
+            $passwordToStore = $this->hashPassword($submittedPassword);
+        }
+
         $stmt = $this->db->prepare('UPDATE ThanhVien SET HoTen = :HoTen, Email = :Email, MatKhau = :MatKhau, MaVaiTro = :MaVaiTro, NgayTao = :NgayTao WHERE MaThanhVien = :MaThanhVien');
         $stmt->execute([
             'HoTen' => $data['HoTen'] ?? '',
             'Email' => $data['Email'] ?? '',
-            'MatKhau' => $data['MatKhau'] ?? '',
+            'MatKhau' => $passwordToStore,
             'MaVaiTro' => $data['MaVaiTro'] ?? 'TV',
             'NgayTao' => $data['NgayTao'] ?? date('Y-m-d H:i:s'),
             'MaThanhVien' => $maThanhVien,
@@ -89,25 +117,61 @@ trait MemberRepositoryTrait
 
     public function login(string $email, string $password): ?array
     {
-        // Bản ghi trả về chứa MaVaiTro; Login Controller sao chép role vào session để phân quyền.
-        return $this->fetchOne('SELECT * FROM ThanhVien WHERE Email = :email AND MatKhau = :password LIMIT 1', ['email' => $email, 'password' => $password]);
+        // Lấy theo email trước, sau đó verify bằng password_verify để hỗ trợ hash an toàn.
+        $member = $this->fetchOne('SELECT * FROM ThanhVien WHERE Email = :email LIMIT 1', ['email' => $email]);
+        if (!$member || !$this->passwordMatches($password, (string)$member['MatKhau'])) {
+            return null;
+        }
+
+        // Tài khoản cũ đang lưu plaintext sẽ được nâng cấp sang hash ngay sau lần đăng nhập hợp lệ.
+        if (!$this->isPasswordHash((string)$member['MatKhau']) || password_needs_rehash((string)$member['MatKhau'], PASSWORD_DEFAULT)) {
+            $member['MatKhau'] = $this->hashPassword($password);
+            $this->storePasswordHash((string)$member['MaThanhVien'], (string)$member['MatKhau']);
+        }
+        return $member;
     }
 
     public function updatePassword(string $maThanhVien, string $oldPassword, string $newPassword): void
     {
         // Xác nhận mật khẩu cũ trước khi UPDATE để tránh đổi mật khẩu chỉ bằng mã thành viên.
         $member = $this->findMember($maThanhVien);
-        if (!$member || (string)$member['MatKhau'] !== $oldPassword) {
+        if (!$member || !$this->passwordMatches($oldPassword, (string)$member['MatKhau'])) {
             throw new InvalidArgumentException('Mật khẩu cũ không đúng.');
         }
-        $stmt = $this->db->prepare('UPDATE ThanhVien SET MatKhau = :matKhau WHERE MaThanhVien = :maThanhVien');
-        $stmt->execute(['matKhau' => $newPassword, 'maThanhVien' => $maThanhVien]);
+        if ($this->passwordMatches($newPassword, (string)$member['MatKhau'])) {
+            throw new InvalidArgumentException('Mật khẩu mới không được trùng mật khẩu hiện tại.');
+        }
+        $this->storePasswordHash($maThanhVien, $this->hashPassword($newPassword));
     }
 
     public function resetPassword(string $maThanhVien, string $newPassword): void
     {
         // Luồng quên mật khẩu đã xác thực bằng token email nên không yêu cầu mật khẩu cũ.
+        $this->storePasswordHash($maThanhVien, $this->hashPassword($newPassword));
+    }
+
+    public function passwordMatches(string $plainPassword, string $storedPassword): bool
+    {
+        // Tương thích dữ liệu cũ: hash thì verify, plaintext thì so sánh hằng thời gian.
+        if ($this->isPasswordHash($storedPassword)) {
+            return password_verify($plainPassword, $storedPassword);
+        }
+        return hash_equals($storedPassword, $plainPassword);
+    }
+
+    private function hashPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    private function isPasswordHash(string $value): bool
+    {
+        return (password_get_info($value)['algoName'] ?? 'unknown') !== 'unknown';
+    }
+
+    private function storePasswordHash(string $maThanhVien, string $hash): void
+    {
         $stmt = $this->db->prepare('UPDATE ThanhVien SET MatKhau = :matKhau WHERE MaThanhVien = :maThanhVien');
-        $stmt->execute(['matKhau' => $newPassword, 'maThanhVien' => $maThanhVien]);
+        $stmt->execute(['matKhau' => $hash, 'maThanhVien' => $maThanhVien]);
     }
 }

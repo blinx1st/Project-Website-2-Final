@@ -7,7 +7,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
         <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php endif; ?>
 
-    <?php // search chọn giữa bộ lọc thành viên và bộ lọc sự kiện do controller chỉ định. ?>
+    <?php // search chọn giữa bộ lọc thành viên và bộ lọc sự kiện do controller chỉ định.
+    ?>
     <?php if (!empty($data['search'])): ?>
         <form class="search-form" method="get" action="<?= url_for($data['controller'], $data['listAction']) ?>">
             <?php if ($data['search'] === 'members'): ?>
@@ -40,7 +41,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
         </form>
     <?php endif; ?>
 
-    <?php // groupFilter phục vụ danh sách thành viên nhóm, giữ MaNhom trên query string. ?>
+    <?php // groupFilter phục vụ danh sách thành viên nhóm, giữ MaNhom trên query string.
+    ?>
     <?php if (!empty($data['groupFilter'])): ?>
         <form class="search-form" method="get" action="<?= url_for($data['controller'], $data['listAction']) ?>">
             <select class="form-control" name="MaNhom">
@@ -53,7 +55,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
         </form>
     <?php endif; ?>
 
-    <?php // Chức năng xuất cuối kỳ chỉ xuất hiện trong màn hình điểm rèn luyện của TVCN. ?>
+    <?php // Chức năng xuất cuối kỳ chỉ xuất hiện trong màn hình điểm rèn luyện của TVCN.
+    ?>
     <?php if (($data['controller'] ?? '') === 'DiemRenLuyen_Admin_64131060'): ?>
         <form class="search-form" method="get" action="<?= url_for('DiemRenLuyen_Admin_64131060', 'ExportCsv') ?>">
             <select class="form-control" name="HocKy" required>
@@ -67,7 +70,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
         </form>
     <?php endif; ?>
 
-    <?php // Toolbar ghép các lối tắt quản trị theo role và resource đang được hiển thị. ?>
+    <?php // Toolbar ghép các lối tắt quản trị theo role và resource đang được hiển thị.
+    ?>
     <?php if (!$isPostList || !empty($data['canWrite'])): ?>
         <div class="toolbar">
             <?php if (!empty($data['canWrite'])): ?>
@@ -76,10 +80,15 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
             <?php if (!$isPostList && current_role() === 'TVCN'): ?>
                 <a class="btn-back" href="<?= url_for('CLB_Admin_64131060', 'CLB_Admin_64131060') ?>">CLB</a>
                 <a class="btn-back" href="<?= url_for('ThanhVienCLB_Admin_64131060', 'ThanhVienCLB_Admin_64131060') ?>">THÀNH VIÊN CLB</a>
-                <a class="btn-back" href="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">BÁO CÁO</a>
+                <?php if (($data['controller'] ?? '') !== 'BaoCao_Admin_64131060'): ?>
+                    <a class="btn-back" href="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">BÁO CÁO</a>
+                <?php endif; ?>
             <?php elseif (!$isPostList && current_role() === 'TVTG'): ?>
                 <a class="btn-back" href="<?= url_for('CLB_Assitant_64131060', 'CLB_Assitant_64131060') ?>">CLB</a>
                 <a class="btn-back" href="<?= url_for('ThanhVienCLB_Assitant_64131060', 'ThanhVienCLB_Assitant_64131060') ?>">THÀNH VIÊN CLB</a>
+            <?php endif; ?>
+            <?php if (!$isPostList && ($data['controller'] ?? '') === 'BaoCao_Admin_64131060'): ?>
+                <a class="btn-back" href="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">THỐNG KÊ</a>
             <?php endif; ?>
             <?php if (!$isPostList && ($data['controller'] ?? '') === 'DiemRenLuyen_Admin_64131060'): ?>
                 <a class="btn-back" href="<?= url_for('LoaiSuKien_Admin_64131060', 'LoaiSuKien_Admin_64131060') ?>">LOẠI SỰ KIỆN</a>
@@ -114,7 +123,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
     <?php if (!empty($data['emptyMessage'])): ?><div class="alert alert-warning"><?= h($data['emptyMessage']) ?></div><?php endif; ?>
     <div id="api-message" class="alert" style="display:none;"></div>
 
-    <?php // Bài đăng dùng dạng feed; các resource còn lại dùng bảng dữ liệu tổng quát. ?>
+    <?php // Bài đăng dùng dạng feed; các resource còn lại dùng bảng dữ liệu tổng quát.
+    ?>
     <?php if ($isPostList): ?>
         <div class="post-feed">
             <?php foreach ($data['rows'] as $row): ?>
@@ -166,7 +176,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
                     </tr>
                 </thead>
                 <tbody>
-                    <?php // Mỗi row đến từ Repository; cfg.list quyết định field nào thực sự xuất hiện. ?>
+                    <?php // Mỗi row đến từ Repository; cfg.list quyết định field nào thực sự xuất hiện.
+                    ?>
                     <?php foreach ($data['rows'] as $row): ?>
                         <tr data-ma-sukien="<?= h($row['MaSuKien'] ?? '') ?>" data-ma-thanhvien="<?= h($row['MaThanhVien'] ?? '') ?>">
                             <?php foreach ($data['cfg']['list'] as $field => $label): ?>
@@ -190,7 +201,8 @@ $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang');
                                     <a class="btn btn-sm btn-warning" href="<?= url_for($data['controller'], 'Edit', $params) ?>">Sửa</a>
                                     <a class="btn btn-sm btn-danger" href="<?= url_for($data['controller'], 'Delete', $params) ?>">Xóa</a>
                                 <?php endif; ?>
-                                <?php // Các action đặc biệt dưới đây chỉ xuất hiện khi đúng resource và đúng role. ?>
+                                <?php // Các action đặc biệt dưới đây chỉ xuất hiện khi đúng resource và đúng role.
+                                ?>
                                 <?php if (($data['cfg']['table'] ?? '') === 'NhomHocTap' && current_role() === 'TVCN'): ?>
                                     <a class="btn btn-sm btn-primary" href="<?= url_for('ThanhVienNhom_Admin_64131060', 'ThanhVienNhom_Admin_64131060', ['MaNhom' => $row['MaNhom']]) ?>">Thành viên</a>
                                 <?php elseif (($data['cfg']['table'] ?? '') === 'NhomHocTap' && current_role() === 'TVTG'): ?>

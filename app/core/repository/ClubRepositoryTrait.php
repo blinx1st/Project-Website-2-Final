@@ -52,6 +52,23 @@ trait ClubRepositoryTrait
         return $this->fetchAll($sql, $params);
     }
 
+    public function primaryClub(): ?array
+    {
+        // Website vận hành như một CLB; ưu tiên mã CLBTH nếu dữ liệu cũ còn nhiều dòng CLB.
+        return $this->fetchOne($this->clubSelectSql() . " ORDER BY CASE WHEN CLB.MaCLB = 'CLBTH' THEN 0 ELSE 1 END, CLB.MaCLB ASC LIMIT 1");
+    }
+
+    public function singleClubDashboardStats(): array
+    {
+        // Các số liệu này phục vụ trang chức năng CLB, không tạo thêm bảng hay schema mới.
+        return [
+            'members' => (int)$this->db->query('SELECT COUNT(*) FROM ThanhVien')->fetchColumn(),
+            'assistants' => (int)$this->db->query("SELECT COUNT(*) FROM ThanhVien WHERE MaVaiTro IN ('TVCN', 'TVTG')")->fetchColumn(),
+            'groups' => (int)$this->db->query('SELECT COUNT(*) FROM NhomHocTap')->fetchColumn(),
+            'events' => (int)$this->db->query('SELECT COUNT(*) FROM SuKien')->fetchColumn(),
+        ];
+    }
+
     public function findClub(string $maCLB): ?array
     {
         return $this->fetchOne($this->clubSelectSql() . ' WHERE CLB.MaCLB = :MaCLB LIMIT 1', ['MaCLB' => $maCLB]);

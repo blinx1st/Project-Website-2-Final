@@ -112,7 +112,7 @@ class Login_64131060Controller extends Controller
                 if ($new !== $confirm) {
                     throw new InvalidArgumentException('Mật khẩu nhập lại không khớp.');
                 }
-                if ($new === (string)$member['MatKhau']) {
+                if ($this->repo()->passwordMatches($new, (string)$member['MatKhau'])) {
                     throw new InvalidArgumentException('Mật khẩu mới không được trùng mật khẩu hiện tại.');
                 }
                 $this->repo()->resetPassword((string)$member['MaThanhVien'], $new);

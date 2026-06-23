@@ -11,11 +11,11 @@ return [
                     'MaThanhVien' => ['label' => 'Mã số', 'type' => 'text', 'required' => true, 'max_length' => 50],
                     'HoTen' => ['label' => 'Họ tên', 'type' => 'text', 'required' => true, 'max_length' => 100],
                     'Email' => ['label' => 'Email', 'type' => 'email', 'required' => true, 'max_length' => 100],
-                    'MatKhau' => ['label' => 'Mật khẩu', 'type' => 'text', 'required' => true, 'max_length' => 255],
+                    'MatKhau' => ['label' => 'Mật khẩu', 'type' => 'password', 'required' => true, 'max_length' => 255],
                     'MaVaiTro' => ['label' => 'Vai trò', 'type' => 'select', 'relation' => ['table' => 'VaiTro', 'value' => 'MaVaiTro', 'label' => 'TenVaiTro'], 'required' => true],
                     'NgayTao' => ['label' => 'Ngày tạo', 'type' => 'datetime'],
                 ],
-                'list' => ['MaThanhVien' => 'Mã số', 'HoTen' => 'Họ tên', 'Email' => 'Email', 'MatKhau' => 'Mật khẩu', 'TenVaiTro' => 'Vai trò', 'NgayTao' => 'Ngày tạo'],
+                'list' => ['MaThanhVien' => 'Mã số', 'HoTen' => 'Họ tên', 'Email' => 'Email', 'TenVaiTro' => 'Vai trò', 'NgayTao' => 'Ngày tạo'],
             ],
             'CLB' => [
                 'table' => 'CLB',

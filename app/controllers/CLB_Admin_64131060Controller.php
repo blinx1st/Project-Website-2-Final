@@ -1,5 +1,5 @@
 <?php
-// Chủ nhiệm quản lý toàn bộ câu lạc bộ qua cấu hình resource CLB.
+// Chủ nhiệm quản lý trang chức năng của một CLB duy nhất, không tạo thêm nhiều CLB.
 class CLB_Admin_64131060Controller extends Controller
 {
     // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
@@ -12,7 +12,11 @@ class CLB_Admin_64131060Controller extends Controller
     public function index(): void
     {
         $this->requireRoles(['TVCN']);
-        $this->renderCrudList($this->pageTitle, $this->controllerName, $this->listAction, $this->cfg(), $this->repo()->listClubs(), true);
+        $this->render('clb/dashboard', [
+            'title' => $this->pageTitle,
+            'club' => $this->repo()->primaryClub(),
+            'stats' => $this->repo()->singleClubDashboardStats(),
+        ]);
     }
 
     public function Details(...$params): void
@@ -24,7 +28,7 @@ class CLB_Admin_64131060Controller extends Controller
     public function Create(): void
     {
         $this->requireRoles(['TVCN']);
-        $this->crudCreateAction($this->controllerName, $this->listAction, $this->cfg(), fn($data) => $this->repo()->createClub($data), 'Thêm câu lạc bộ');
+        $this->singleClubOnlyMessage();
     }
 
     public function Edit(...$params): void
@@ -36,7 +40,17 @@ class CLB_Admin_64131060Controller extends Controller
     public function Delete(...$params): void
     {
         $this->requireRoles(['TVCN']);
-        $this->crudDeleteAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findClub((string)$keys['MaCLB']), fn($keys) => $this->repo()->deleteClub((string)$keys['MaCLB']));
+        $this->singleClubOnlyMessage();
+    }
+
+    private function singleClubOnlyMessage(): void
+    {
+        $this->render('generic/message', [
+            'title' => 'Website chỉ quản lý một câu lạc bộ',
+            'message' => 'Chức năng CLB hiện dùng để xem thông tin và điều hướng tới Thành viên, Nhóm học tập, Sự kiện. Không tạo hoặc xóa thêm câu lạc bộ.',
+            'buttonText' => 'QUAY VỀ CLB',
+            'buttonUrl' => url_for($this->controllerName, $this->listAction),
+        ]);
     }
 
     private function cfg(): array { return $this->resourceCfg('CLB'); }

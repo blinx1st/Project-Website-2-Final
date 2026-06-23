@@ -225,15 +225,15 @@ INSERT INTO VaiTro (MaVaiTro, TenVaiTro) VALUES
 ('TV', 'Sinh viên');
 
 INSERT INTO ThanhVien (MaThanhVien, HoTen, Email, MatKhau, MaVaiTro) VALUES
-('64132127', 'Trần Thanh Thái', 'quochieuu@vnuis.edu.vn', '123', 'TVCN'),
-('64131060', 'Phạm Tuấn Kiệt', 'trang@vnuis.edu.vn', '123', 'TVTG'),
-('64132677', 'Vương Minh Trí', 'tri.vm.64cntt@vnuis.edu.vn', '123', 'TVTG'),
-('64130378', 'Trần Diệp Hồng Dung', 'hongphuong@vnuis.edu.vn', '123', 'TV'),
-('64132848', 'Trịnh Ngọc Tuấn', 'tuan.tn.64cntt@vnuis.edu.vn', '123', 'TV'),
-('64130493', 'Cao Linh Hà', 'ha.cl.64cntt@vnuis.edu.vn', '123', 'TV'),
-('64130152', 'Nguyễn Hồ Thanh Bình', 'binh.nht.64cntt@vnuis.edu.vn', '123', 'TV'),
-('64131973', 'Nguyễn Hiểu Quyên', 'quyen.nh.64cntt@vnuis.edu.vn', '123', 'TV'),
-('64132409', 'Vĩnh Thuận', 'thuan.v.64cntt@vnuis.edu.vn', '123', 'TV');
+('64132127', 'Trần Quốc Hiệu', 'quochieuu@gmail.com', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TVCN'),
+('64131060', 'QqTrang', 'trang@gmail.com', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TVTG'),
+('64132677', 'Vương Minh Trí', 'tri.vm.64cntt@vnuis.edu.vn', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TVTG'),
+('64130378', 'Hong Phuong', 'hongphuong@gmail.com', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TV'),
+('64132848', 'Trịnh Ngọc Tuấn', 'tuan.tn.64cntt@vnuis.edu.vn', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TV'),
+('64130493', 'Cao Linh Hà', 'ha.cl.64cntt@vnuis.edu.vn', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TV'),
+('64130152', 'Nguyễn Hồ Thanh Bình', 'binh.nht.64cntt@vnuis.edu.vn', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TV'),
+('64131973', 'Nguyễn Hiểu Quyên', 'quyen.nh.64cntt@vnuis.edu.vn', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TV'),
+('64132409', 'Vĩnh Thuận', 'thuan.v.64cntt@vnuis.edu.vn', '$2y$10$BHLDZvJFSGSGKDRdhcIEluDzkBfjxHSGDsMGJHt69/15t0pysxkF.', 'TV');
 
 INSERT INTO LoaiSuKien (MaLoaiSuKien, TenLoaiSuKien, MoTa) VALUES
 ('WORKSHOP', 'Workshop chuyên môn', 'Hoạt động học thuật, kỹ năng và chuyên môn.'),
@@ -241,8 +241,7 @@ INSERT INTO LoaiSuKien (MaLoaiSuKien, TenLoaiSuKien, MoTa) VALUES
 ('COMMUNITY', 'Hoạt động cộng đồng', 'Hoạt động ngoại khóa, định hướng và phục vụ cộng đồng.');
 
 INSERT INTO CLB (MaCLB, TenCLB, MoTa, ChuNhiem, NgayThanhLap) VALUES
-('CLBTH', 'CLB Tin học', 'Câu lạc bộ học thuật về công nghệ thông tin, lập trình và hoạt động ngoại khóa.', '64132127', '2020-09-01'),
-('CLBWEB', 'Nhóm Web Infotech', 'Nhóm phụ trách các buổi học và workshop phát triển Web.', '64131060', '2022-09-01');
+('CLBTH', 'CLB Tin học', 'Câu lạc bộ học thuật về công nghệ thông tin, lập trình và hoạt động ngoại khóa.', '64132127', '2020-09-01');
 
 INSERT INTO ThanhVienCLB (MaCLB, MaThanhVien, VaiTroCLB) VALUES
 ('CLBTH', '64132127', 'Chủ nhiệm'),
@@ -250,15 +249,14 @@ INSERT INTO ThanhVienCLB (MaCLB, MaThanhVien, VaiTroCLB) VALUES
 ('CLBTH', '64132677', 'Ban tổ chức'),
 ('CLBTH', '64130378', 'Thành viên'),
 ('CLBTH', '64132848', 'Thành viên'),
-('CLBWEB', '64131060', 'Chủ nhiệm'),
-('CLBWEB', '64130152', 'Thành viên');
+('CLBTH', '64130152', 'Thành viên');
 
 -- Seed sự kiện trước rồi mới seed đăng ký/check-in phụ thuộc sự kiện.
 INSERT INTO SuKien (MaSuKien, TenSuKien, MaCLB, MaLoaiSuKien, HocKy, NamHoc, MoTa, NgayBatDau, NgayKetThuc, NguoiToChuc, SucChua, CheckinToken, CheckinMoLuc, CheckinDongLuc) VALUES
 ('SK001', 'Workshop Kỹ năng', 'CLBTH', 'WORKSHOP', 'HK1', '2024-2025', 'Buổi workshop về kỹ năng làm việc nhóm.', '2024-12-01 08:00:00', '2024-12-01 11:00:00', '64132127', 80, 'token-sk001-64131060', '2024-12-01 07:30:00', '2024-12-01 11:30:00'),
 ('SK002', 'Hackathon', 'CLBTH', 'CONTEST', 'HK1', '2024-2025', 'Cuộc thi lập trình kéo dài 48 giờ.', '2024-12-15 08:00:00', '2024-12-17 18:00:00', '64132127', 60, 'token-sk002-64131060', '2024-12-15 07:30:00', '2024-12-17 18:30:00'),
 ('SK003', 'Chào đón Tân Sinh Viên', 'CLBTH', 'COMMUNITY', 'HK1', '2024-2025', 'Hoạt động chào đón và định hướng.', '2024-11-30 08:00:00', '2024-11-30 11:00:00', '64132127', 120, 'token-sk003-64131060', '2024-11-30 07:30:00', '2024-11-30 11:30:00'),
-('SK004', 'Buổi học Python cơ bản', 'CLBWEB', 'WORKSHOP', 'HK2', '2024-2025', 'Dành cho người mới bắt đầu học lập trình Python.', '2025-03-05 08:00:00', '2025-03-05 11:00:00', '64131060', 40, 'token-sk004-64131060', '2025-03-05 07:30:00', '2025-03-05 11:30:00');
+('SK004', 'Buổi học Python cơ bản', 'CLBTH', 'WORKSHOP', 'HK2', '2024-2025', 'Dành cho người mới bắt đầu học lập trình Python.', '2025-03-05 08:00:00', '2025-03-05 11:00:00', '64131060', 40, 'token-sk004-64131060', '2025-03-05 07:30:00', '2025-03-05 11:30:00');
 
 INSERT INTO ThanhVienSuKien (MaSuKien, MaThanhVien, TrangThaiThamGia, NgayXacNhan, XacNhanBoi) VALUES
 ('SK001', '64130378', 'Đã tham gia', '2024-12-01 11:05:00', '64132127'),

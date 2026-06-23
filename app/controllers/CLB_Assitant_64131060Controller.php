@@ -1,5 +1,5 @@
 <?php
-// Trợ giảng chỉ thao tác các CLB mà scope Repository xác nhận có quyền quản lý.
+// Trợ giảng chỉ xem/cập nhật CLB trong phạm vi được phân quyền; website không tạo nhiều CLB.
 class CLB_Assitant_64131060Controller extends Controller
 {
     // Metadata này cho CrudSupport biết route quay về, tiêu đề trang và resource cần xử lý.
@@ -12,7 +12,7 @@ class CLB_Assitant_64131060Controller extends Controller
     public function index(): void
     {
         $this->requireRoles(['TVTG']);
-        $this->renderCrudList($this->pageTitle, $this->controllerName, $this->listAction, $this->cfg(), $this->repo()->listClubs($this->currentMemberId()), true);
+        $this->renderCrudList($this->pageTitle, $this->controllerName, $this->listAction, $this->cfg(), $this->repo()->listClubs($this->currentMemberId()), false);
     }
 
     public function Details(...$params): void
@@ -24,7 +24,7 @@ class CLB_Assitant_64131060Controller extends Controller
     public function Create(): void
     {
         $this->requireRoles(['TVTG']);
-        $this->crudCreateAction($this->controllerName, $this->listAction, $this->cfg(), fn($data) => $this->repo()->createClub($data), 'Thêm câu lạc bộ', null, fn($data) => $this->guardClubWrite($data));
+        $this->singleClubOnlyMessage();
     }
 
     public function Edit(...$params): void
@@ -36,7 +36,7 @@ class CLB_Assitant_64131060Controller extends Controller
     public function Delete(...$params): void
     {
         $this->requireRoles(['TVTG']);
-        $this->crudDeleteAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findClub((string)$keys['MaCLB']), fn($keys) => $this->repo()->deleteClub((string)$keys['MaCLB']), true, fn($row) => $this->guardClubScope((string)$row['MaCLB']));
+        $this->singleClubOnlyMessage();
     }
 
     private function guardClubScope(string $maCLB): void
@@ -56,6 +56,16 @@ class CLB_Assitant_64131060Controller extends Controller
             return;
         }
         $this->denyUnauthorized();
+    }
+
+    private function singleClubOnlyMessage(): void
+    {
+        $this->render('generic/message', [
+            'title' => 'Website chỉ quản lý một câu lạc bộ',
+            'message' => 'Trợ giảng chỉ xem và cập nhật thông tin CLB trong phạm vi được phân quyền. Không tạo hoặc xóa thêm câu lạc bộ.',
+            'buttonText' => 'QUAY VỀ CLB',
+            'buttonUrl' => url_for($this->controllerName, $this->listAction),
+        ]);
     }
 
     private function cfg(): array { return $this->resourceCfg('CLB'); }

@@ -7,7 +7,9 @@
             <tr>
                 <th style="width:240px;"><?= h($meta['label'] ?? $field) ?></th>
                 <td>
-                    <?php if (($meta['type'] ?? '') === 'image' && !empty($data['row'][$field])): ?>
+                    <?php if (($meta['type'] ?? '') === 'password'): ?>
+                        ••••••••
+                    <?php elseif (($meta['type'] ?? '') === 'image' && !empty($data['row'][$field])): ?>
                         <img class="thumb" src="<?= asset_url('Image/' . $data['row'][$field]) ?>" alt="<?= h($data['row'][$field]) ?>">
                     <?php else: ?>
                         <?= nl2br(h($data['row'][$field] ?? '')) ?>

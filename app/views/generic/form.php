@@ -25,6 +25,7 @@ $isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_6413106
                             <?php
                             $type = $meta['type'] ?? 'text';
                             $value = $data['row'][$field] ?? '';
+                            $displayValue = $type === 'password' ? '' : $value;
                             $required = !empty($meta['required']) ? 'required' : '';
                             $maxLength = isset($meta['max_length']) ? 'maxlength="' . h($meta['max_length']) . '"' : '';
                             $pattern = isset($meta['pattern']) ? 'pattern="' . h(trim($meta['pattern'], '/')) . '"' : '';
@@ -35,7 +36,7 @@ $isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_6413106
                                     <?php if ($type === 'textarea'): ?>
                                         <textarea class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" <?= $required ?> <?= $maxLength ?>><?= h($value) ?></textarea>
                                     <?php else: ?>
-                                        <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="<?= h($type) ?>" value="<?= h($value) ?>" <?= $required ?> <?= $maxLength ?> <?= $pattern ?>>
+                                        <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="<?= h($type) ?>" value="<?= h($displayValue) ?>" <?= $required ?> <?= $maxLength ?> <?= $pattern ?>>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -50,9 +51,10 @@ $isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_6413106
                     // Chuyển metadata phía server thành thuộc tính HTML phục vụ nhập liệu và kiểm tra cơ bản.
                     $type = $meta['type'] ?? 'text';
                     $value = $data['row'][$field] ?? '';
+                    $displayValue = $type === 'password' ? '' : $value;
                     $isPk = in_array($field, $data['cfg']['pk'], true);
                     $disabled = (($data['action'] === 'Edit' && $isPk) || ($meta['readonly'] ?? false));
-                    $required = !empty($meta['required']) ? 'required' : '';
+                    $required = (!empty($meta['required']) && !(($data['action'] ?? '') === 'Edit' && $type === 'password')) ? 'required' : '';
                     $maxLength = isset($meta['max_length']) ? 'maxlength="' . h($meta['max_length']) . '"' : '';
                     $pattern = isset($meta['pattern']) ? 'pattern="' . h(trim($meta['pattern'], '/')) . '"' : '';
                     $min = isset($meta['min']) ? 'min="' . h($meta['min']) . '"' : '';
@@ -91,7 +93,7 @@ $isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_6413106
                         <?php elseif ($type === 'number'): ?>
                             <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="number" step="any" value="<?= h($value) ?>" <?= $required ?> <?= $min ?> <?= $disabled ? 'readonly' : '' ?>>
                         <?php else: ?>
-                            <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="<?= h($type) ?>" value="<?= h($value) ?>" <?= $required ?> <?= $maxLength ?> <?= $pattern ?> <?= $disabled ? 'readonly' : '' ?>>
+                            <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="<?= h($type) ?>" value="<?= h($displayValue) ?>" <?= $required ?> <?= $maxLength ?> <?= $pattern ?> <?= $disabled ? 'readonly' : '' ?>>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>

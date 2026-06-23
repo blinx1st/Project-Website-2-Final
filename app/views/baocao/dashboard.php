@@ -1,7 +1,13 @@
-<?php // Dashboard hiển thị cấu trúc stats do ReportRepositoryTrait tổng hợp theo bộ lọc. ?>
+<?php // Dashboard hiển thị cấu trúc stats do ReportRepositoryTrait tổng hợp theo bộ lọc.
+?>
 <section class="panel report-panel">
     <h1 class="page-title"><?= h($data['title']) ?></h1>
-    <?php // Bộ lọc đi bằng GET để URL có thể tải lại hoặc chia sẻ mà vẫn giữ phạm vi thống kê. ?>
+    <?php // Nút này mở index CRUD của Báo cáo để Chủ nhiệm xem/thêm/sửa/xóa các bản ghi báo cáo. ?>
+    <div class="toolbar">
+        <a class="btn-main" href="<?= url_for('BaoCao_Admin_64131060', 'BaoCao_Admin_64131060') ?>">DANH SÁCH BÁO CÁO</a>
+    </div>
+    <?php // Bộ lọc đi bằng GET để URL có thể tải lại hoặc chia sẻ mà vẫn giữ phạm vi thống kê.
+    ?>
     <form class="search-form" method="get" action="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">
         <select class="form-control" name="HocKy">
             <option value="">Tất cả học kỳ</option>
@@ -19,7 +25,8 @@
         <button class="btn-main" type="submit">LỌC THỐNG KÊ</button>
     </form>
 
-    <?php // summary cấp số liệu cho bốn thẻ; byClub và topStudents cấp hai bảng phía dưới. ?>
+    <?php // summary cấp số liệu cho bốn thẻ; byClub và topStudents cấp hai bảng phía dưới.
+    ?>
     <div class="report-grid">
         <div class="report-card"><span>Tổng sự kiện</span><strong><?= h($data['stats']['summary']['SoSuKien'] ?? 0) ?></strong></div>
         <div class="report-card"><span>Lượt đăng ký</span><strong><?= h($data['stats']['summary']['SoDangKy'] ?? 0) ?></strong></div>
@@ -29,21 +36,45 @@
 
     <h2>Thống kê theo CLB</h2>
     <table class="table table-bordered table-striped">
-        <thead><tr><th>CLB</th><th>Số sự kiện</th><th>Lượt check-in</th><th>Tổng điểm</th></tr></thead>
+        <thead>
+            <tr>
+                <th>CLB</th>
+                <th>Số sự kiện</th>
+                <th>Lượt check-in</th>
+                <th>Tổng điểm</th>
+            </tr>
+        </thead>
         <tbody>
-        <?php foreach ($data['stats']['byClub'] as $row): ?>
-            <tr><td><?= h($row['TenCLB']) ?></td><td><?= h($row['SoSuKien']) ?></td><td><?= h($row['SoCheckin']) ?></td><td><?= h($row['TongDiem']) ?></td></tr>
-        <?php endforeach; ?>
+            <?php foreach ($data['stats']['byClub'] as $row): ?>
+                <tr>
+                    <td><?= h($row['TenCLB']) ?></td>
+                    <td><?= h($row['SoSuKien']) ?></td>
+                    <td><?= h($row['SoCheckin']) ?></td>
+                    <td><?= h($row['TongDiem']) ?></td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 
     <h2>Top sinh viên tích cực</h2>
     <table class="table table-bordered table-striped">
-        <thead><tr><th>Mã sinh viên</th><th>Họ tên</th><th>Lượt tham gia</th><th>Tổng điểm</th></tr></thead>
+        <thead>
+            <tr>
+                <th>Mã sinh viên</th>
+                <th>Họ tên</th>
+                <th>Lượt tham gia</th>
+                <th>Tổng điểm</th>
+            </tr>
+        </thead>
         <tbody>
-        <?php foreach ($data['stats']['topStudents'] as $row): ?>
-            <tr><td><?= h($row['MaThanhVien']) ?></td><td><?= h($row['HoTen']) ?></td><td><?= h($row['SoLuotThamGia']) ?></td><td><?= h($row['TongDiem']) ?></td></tr>
-        <?php endforeach; ?>
+            <?php foreach ($data['stats']['topStudents'] as $row): ?>
+                <tr>
+                    <td><?= h($row['MaThanhVien']) ?></td>
+                    <td><?= h($row['HoTen']) ?></td>
+                    <td><?= h($row['SoLuotThamGia']) ?></td>
+                    <td><?= h($row['TongDiem']) ?></td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 </section>
